@@ -66,7 +66,15 @@ ui <- fluidPage(
                       choices=c("first_date","last_date"),
                       selected = NULL,
                       animate = TRUE
-      )
+      ),
+      
+      #### DOWNLOAD BUTTON FOR SPATIAL PLOT ####
+      selectInput("FormatDownloadSpatialPlot",label="Select format to use to download the Spatial Plot",choices = c("jpeg","pdf","html"),selected = "jpeg"),
+      downloadButton("DownloadSpatialPlot", label = "Download Spatial Plot"),
+      
+      #### DOWNLOAD BUTTON FOR TIME SERIES PLOT ####
+      selectInput("FormatDownloadTimeSeriesPlot",label="Select format to use to download the Time Series Plot",choices = c("jpeg","pdf","html"),selected = "jpeg"),
+      downloadButton("DownloadTimeSeriesPlot", label = "Download Time Series Plot")
       
       
       
@@ -75,6 +83,8 @@ ui <- fluidPage(
     mainPanel(
       #### TIME SERIES PLOT
       dygraphOutput("TimeSeriesPlot"),
+      
+      br(),br(),
       
       ####SPATIAL PLOT
       tmapOutput("SpatialPlot")
@@ -175,14 +185,23 @@ server <- function(input,output,session){
     generateDataForTimeSeriesPlot(updatedData(),variable(),setOfLocations())
   })
   
+  #### TIME SERIES PLOT ####
   
-  output$TimeSeriesPlot <- renderDygraph({
+  TimeSeriesPlot <- reactive({
     
     dygraph(dataForTimeSeriesPlot()) %>% dyRangeSelector() %>%
       dyLegend(show = 'onmouseover',width = 400)
+    
+  })
+  output$TimeSeriesPlot <- renderDygraph({
+    
+    TimeSeriesPlot()
   })
   
-  output$SpatialPlot <- renderTmap({
+  
+  #### SPATIAL PLOT ####
+  
+  SpatialPlot <- reactive({
     
     tmap_mode('view')
     tmap_options(check.and.fix = TRUE)
@@ -190,6 +209,68 @@ server <- function(input,output,session){
     tm_shape(dataForSpatialPlot())+
       tm_symbols(col=variable(),popup.vars = TRUE)
   })
+  output$SpatialPlot <- renderTmap({
+    
+    SpatialPlot()
+  })
+  
+  #### DOWNLOAD TIME SERIES PLOT ####
+  
+  formatDownloadTimeSeriesPlot <- reactive({
+    
+    req(input$FormatDownloadTimeSeriesPlot)
+    input$FormatDownloadTimeSeriesPlot
+  })
+  
+  
+  
+  output$DownloadTimeSeriesPlot <- downloadHandler(
+    
+    filename = function(){
+      
+      paste("timeSeriesPlot.",formatDownloadTimeSeriesPlot(),sep='')
+    }
+    ,
+    content = function(file){
+      
+      if(formatDownloadTimeSeriesPlot() == "html"){
+        
+        htmlwidgets::saveWidget(TimeSeriesPlot(),file = file) 
+        
+      }
+      else{
+        
+        htmlwidgets::saveWidget(TimeSeriesPlot(),file="temp.html")
+        webshot(url="temp.html",file=file)
+      }
+      
+    }
+    
+  )
+  
+  
+  #### DOWNLOAD SPATIAL PLOT
+  
+  formatDownloadSpatialPlot <- reactive({
+    req(input$FormatDownloadSpatialPlot)
+    input$FormatDownloadSpatialPlot
+  })
+  
+  
+  output$DownloadSpatialPlot <- downloadHandler(
+    
+    filename = function(){
+      
+      paste("SpatialPlot.",formatDownloadTimeSeriesPlot(),sep='')
+    }
+    ,
+    content = function(file){
+      
+      tmap_save(SpatialPlot(),file=file) 
+    }
+    
+  )
+  
   
   
   

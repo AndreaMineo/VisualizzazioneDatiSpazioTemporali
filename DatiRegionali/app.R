@@ -70,9 +70,11 @@ ui <- fluidPage(
       ),
       
       
-        
-      selectInput("FormatDownloadSpatialPlot",label="Select format to use to download the Spatial Plot",choices = c("jpg","pdf","html"),selected = "jpg"),
+      #### DOWNLOAD BUTTON FOR SPATIAL PLOT ####
+      selectInput("FormatDownloadSpatialPlot",label="Select format to use to download the Spatial Plot",choices = c("jpeg","pdf","html"),selected = "jpeg"),
       downloadButton("DownloadSpatialPlot", label = "Download Spatial Plot"),
+      
+      #### DOWNLOAD BUTTON FOR TIME SERIES PLOT ####
       selectInput("FormatDownloadTimeSeriesPlot",label="Select format to use to download the Time Series Plot",choices = c("jpeg","pdf","html"),selected = "jpeg"),
       downloadButton("DownloadTimeSeriesPlot", label = "Download Time Series Plot")
 ),
@@ -235,18 +237,13 @@ server <- function(input,output,session){
        
        htmlwidgets::saveWidget(TimeSeriesPlot(),file = file) 
     
-        }
-     if(formatDownloadTimeSeriesPlot() == "jpeg"){
+     }
+     else{
        
        htmlwidgets::saveWidget(TimeSeriesPlot(),file="temp.html")
        webshot(url="temp.html",file=file)
      }
      
-     if(formatDownloadTimeSeriesPlot() == "pdf"){
-       
-       htmlwidgets::saveWidget(TimeSeriesPlot(),file="temp.html")
-       webshot(url="temp.html",file=file)
-     }
    }
    
  )
