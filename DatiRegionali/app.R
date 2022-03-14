@@ -1,0 +1,286 @@
+library(shiny)
+library(sf)
+library(shinyWidgets)
+library(dygraphs)
+library(tmap)
+library(webshot)
+
+
+
+
+
+source("utilityFunctions.R")
+
+ui <- fluidPage(
+  
+  sidebarLayout(
+    
+    sidebarPanel(
+      
+      
+      #### WIDGET TO LOAD DATA FILE
+      fileInput("dataFile", "Selecting data file",
+                multiple = FALSE,
+                accept = c("text/csv",
+                           "text/comma-separated-values,text/plain",
+                           ".csv")),
+      
+      #### WIDGET TO LOAD SHAPE FILE
+      fileInput(inputId = "filemap",
+                label = "Upload map. Choose shapefile",
+                multiple = TRUE,
+                accept = c('.shp','.dbf','.shx','.prj')),
+      
+      #### WIDGET TO SELECT COLUMN CONTAINING REGIONS' NAMES ON DATA FILE
+      
+      selectInput("colRegNameDataFile",
+        label= "Selecting the column containing regions' names in the data file",
+        choices=NULL
+      ),
+      
+      #### WIDGET TO SELECT COLUMN CONTAINING REGIONS' NAMES ON SHAPE FILE
+      
+      selectInput("colRegNameShapeFile",
+                  label= "Selecting the column containing regions' names in the shape file",
+                  choices=NULL
+      ),
+      
+      #### WIDGET TO SELECT THE VARIABLE TO PLOT
+      
+      selectInput("variable",
+                  label= "Selecting the variable to plot",
+                  choices=NULL,
+                  selected = NULL
+      ),
+      
+      selectInput("RegToPlot",
+                  label= "Selecting the set of location to plot for time series plot",
+                  choices=NULL,
+                  selected = NULL,
+                  multiple = TRUE
+      ),
+      
+      ####  WIDGET TO SELECT THE SPECIFIC DATE FOR SPATIAL PLOT 
+      
+      sliderTextInput("ChoosedDate",
+        label="Selecting date for spatial plot",
+        choices=c("first_date","last_date"),
+        selected = NULL,
+        animate = TRUE
+      ),
+      
+      
+        
+      selectInput("FormatDownloadSpatialPlot",label="Select format to use to download the Spatial Plot",choices = c("jpg","pdf","html"),selected = "jpg"),
+      downloadButton("DownloadSpatialPlot", label = "Download Spatial Plot"),
+      selectInput("FormatDownloadTimeSeriesPlot",label="Select format to use to download the Time Series Plot",choices = c("jpeg","pdf","html"),selected = "jpeg"),
+      downloadButton("DownloadTimeSeriesPlot", label = "Download Time Series Plot")
+),
+    
+    mainPanel(
+      #### TIME SERIES PLOT
+      dygraphOutput("TimeSeriesPlot"),
+      
+      br(), br(),
+      
+      ####SPATIAL PLOT
+      tmapOutput("SpatialPlot")
+    )
+  )
+)
+
+
+
+server <- function(input,output,session){
+  
+  ### loading data file
+ data <- reactive({
+   req(input$dataFile)
+   loadDataFile(input$dataFile)
+   })
+ 
+ ### loading shape file
+ map <- reactive({
+   
+   req(input$filemap)
+   loadShapeFile(input$filemap)
+ })
+  
+ 
+ #### Updating values in dropdown using to choose regions' name columns in each dataframe
+ DataColumns <- reactive({names(data())})
+ 
+ observeEvent(DataColumns(), {
+   updateSelectInput(inputId = "colRegNameDataFile", choices = DataColumns()[-1])
+ })
+ 
+ ShapeColumns <- reactive({names(map())})
+ 
+ observeEvent(ShapeColumns(), {
+   updateSelectInput(inputId = "colRegNameShapeFile", choices = ShapeColumns())
+ })
+ 
+ 
+ ### updating columns names in data 
+ updatedMap <- reactive({
+   req(input$colRegNameShapeFile)
+   renameColumn(map(),input$colRegNameShapeFile,"region_name")
+ })
+ 
+ 
+ ### updating columns names in map 
+ updatedData <- reactive({
+   req(input$colRegNameDataFile)
+   renameColumn(data(),input$colRegNameDataFile,"region_name")
+   
+ })
+ 
+ 
+ #### updating values in dropdown using to select the variable to plot
+ observeEvent(updatedData(), {
+   values = names(updatedData())[!names(updatedData()) %in% c("date","region_name")]
+   updateSelectInput(inputId = "variable", choices = values)
+   v <- c("all",unique(updatedData()$region_name))
+   updateSelectInput(inputId="RegToPlot",choices=v,selected="all")
+ })
+ 
+ #### updating values in dates slicer
+ observeEvent(data(),{
+   
+   updateSliderTextInput(session,"ChoosedDate",choices = as.character(data()[,1]))
+ })
+ 
+
+ #### getting selected date and variable
+ date <- reactive({
+   req(input$ChoosedDate)
+   as.Date(input$ChoosedDate)
+ 
+ })
+ 
+ variable <- reactive({
+   req(input$variable)
+   input$variable
+ })
+ 
+ setOfRegions <- reactive({
+   
+   req(input$RegToPlot)
+   input$RegToPlot
+ })
+ 
+ 
+ #### generate data for plots
+ dataForSpatialPlot <- reactive({
+   generateDataForSpatialPlot(updatedData(),updatedMap(),variable(),date())
+ })
+ 
+ dataForTimeSeriesPlot <- reactive({
+   generateDataForTimeSeriesPlot(updatedData(),variable(),setOfRegions ())
+ })
+ 
+ 
+ #### TIMESERIES PLOT 
+ 
+ TimeSeriesPlot <- reactive({
+    
+   dygraph(dataForTimeSeriesPlot()) %>% dyRangeSelector() %>%
+     dyLegend(show = 'onmouseover',width = 400)
+   
+ })
+ 
+ output$TimeSeriesPlot <- renderDygraph({
+   
+    TimeSeriesPlot()
+ })
+ 
+ 
+ 
+ #### SPATIAL PLOT 
+ 
+ SpatialPlot <- reactive({
+   
+   tmap_mode('view')
+   tmap_options(check.and.fix = TRUE)
+   
+   tm_shape(dataForSpatialPlot())+
+     tm_polygons(col=variable())
+ })
+ 
+ output$SpatialPlot <- renderTmap({
+   
+    SpatialPlot()
+ })
+ 
+ 
+ #### DOWNLOAD TIME SERIES PLOT 
+ formatDownloadTimeSeriesPlot <- reactive({
+   
+   req(input$FormatDownloadTimeSeriesPlot)
+   input$FormatDownloadTimeSeriesPlot
+ })
+ 
+ 
+ 
+ output$DownloadTimeSeriesPlot <- downloadHandler(
+   
+   filename = function(){
+     
+     paste("timeSeriesPlot.",formatDownloadTimeSeriesPlot(),sep='')
+  }
+   ,
+   content = function(file){
+     
+     if(formatDownloadTimeSeriesPlot() == "html"){
+       
+       htmlwidgets::saveWidget(TimeSeriesPlot(),file = file) 
+    
+        }
+     if(formatDownloadTimeSeriesPlot() == "jpeg"){
+       
+       htmlwidgets::saveWidget(TimeSeriesPlot(),file="temp.html")
+       webshot(url="temp.html",file=file)
+     }
+     
+     if(formatDownloadTimeSeriesPlot() == "pdf"){
+       
+       htmlwidgets::saveWidget(TimeSeriesPlot(),file="temp.html")
+       webshot(url="temp.html",file=file)
+     }
+   }
+   
+ )
+ 
+ 
+ #### DOWNLOAD SPATIAL PLOT
+ 
+ formatDownloadSpatialPlot <- reactive({
+   req(input$FormatDownloadSpatialPlot)
+   input$FormatDownloadSpatialPlot
+ })
+ 
+ 
+ output$DownloadSpatialPlot <- downloadHandler(
+   
+   filename = function(){
+     
+     paste("SpatialPlot.",formatDownloadTimeSeriesPlot(),sep='')
+   }
+   ,
+   content = function(file){
+     
+    tmap_save(SpatialPlot(),file=file) 
+   }
+   
+ )
+ 
+ 
+ 
+ 
+ 
+ 
+}
+
+
+
+shinyApp(ui = ui, server = server)
