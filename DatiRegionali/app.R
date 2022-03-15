@@ -21,8 +21,7 @@ ui <- fluidPage(
       #### WIDGET TO LOAD DATA FILE
       fileInput("dataFile", "Selecting data file",
                 multiple = FALSE,
-                accept = c("text/csv",
-                           "text/comma-separated-values,text/plain",
+                accept = c(".xlsx",
                            ".csv")),
       
       #### WIDGET TO LOAD SHAPE FILE
@@ -104,9 +103,18 @@ ui <- fluidPage(
 
 server <- function(input,output,session){
   
+  dataFileName <- reactive({
+    req(input$dataFile)
+    input$dataFileName
+  })
+  
+  
   ### loading data file
  data <- reactive({
    req(input$dataFile)
+   validate(
+     need(file_ext(dataFileName()$datapath) %in% c("csv","xlsx"),"Invalid")
+   )
    loadDataFile(input$dataFile)
    })
  
@@ -217,7 +225,9 @@ server <- function(input,output,session){
  })
  
  output$TimeSeriesPlot <- renderDygraph({
-   
+   validate(
+     need(file_ext(dataFileName()$datapath) %in% c("csv","xlsx"),"Invalid")
+   )
     TimeSeriesPlot()
  })
  
@@ -235,7 +245,10 @@ server <- function(input,output,session){
  })
  
  output$SpatialPlot <- renderTmap({
-   
+  
+   validate(
+     need(file_ext(dataFileName()$datapath) %in% c("csv","xlsx"),"Invalid")
+   )
     SpatialPlot()
  })
  
