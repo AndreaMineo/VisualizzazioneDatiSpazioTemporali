@@ -5,6 +5,7 @@ library(xts)
 
 
 
+
 #### Function used to load data file as a dataframe
 loadDataFile <- function(filename){
   

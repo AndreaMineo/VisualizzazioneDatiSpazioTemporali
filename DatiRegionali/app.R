@@ -6,9 +6,7 @@ library(tmap)
 library(webshot)
 
 
-
-
-
+source("validation_functions.R")
 source("utilityFunctions.R")
 
 ui <- fluidPage(
@@ -88,6 +86,13 @@ ui <- fluidPage(
 ),
     
     mainPanel(
+      
+      #### ERROR TEXT OUTPUT ####
+      
+      textOutput("error"),
+      
+      br(),br(),
+      
       #### TIME SERIES PLOT
       dygraphOutput("TimeSeriesPlot"),
       
@@ -103,25 +108,37 @@ ui <- fluidPage(
 
 server <- function(input,output,session){
   
-  dataFileName <- reactive({
-    req(input$dataFile)
-    input$dataFileName
-  })
   
-  
-  ### loading data file
- data <- reactive({
+ ### reading data filename
+ dataFileName <- reactive({
+   
    req(input$dataFile)
+   input$dataFile
+ })
+  
+ ### loading data file
+ data <- reactive({
    validate(
-     need(file_ext(dataFileName()$datapath) %in% c("csv","xlsx"),"Invalid")
+     validate_dataFile(dataFileName())
    )
-   loadDataFile(input$dataFile)
+   loadDataFile(dataFileName())
    })
+ 
+ ###  reading shape filename
+ 
+ shapeFileName <- reactive({
+   
+   req(input$filemap)
+   input$filemap
+ })
+ 
  
  ### loading shape file
  map <- reactive({
-   
-   req(input$filemap)
+   validate(
+     
+     validate_ShapeFile(shapeFileName())
+   )
    loadShapeFile(input$filemap)
  })
   
@@ -225,9 +242,6 @@ server <- function(input,output,session){
  })
  
  output$TimeSeriesPlot <- renderDygraph({
-   validate(
-     need(file_ext(dataFileName()$datapath) %in% c("csv","xlsx"),"Invalid")
-   )
     TimeSeriesPlot()
  })
  
@@ -245,10 +259,7 @@ server <- function(input,output,session){
  })
  
  output$SpatialPlot <- renderTmap({
-  
-   validate(
-     need(file_ext(dataFileName()$datapath) %in% c("csv","xlsx"),"Invalid")
-   )
+
     SpatialPlot()
  })
  
@@ -310,7 +321,13 @@ server <- function(input,output,session){
  )
  
  
- 
+ output$error <- renderText({
+   
+   validate(
+     validate_dataFile(dataFileName()),
+     validate_ShapeFile(shapeFileName())
+   )
+ })
  
  
  
