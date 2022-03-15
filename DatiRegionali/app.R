@@ -69,6 +69,15 @@ ui <- fluidPage(
         animate = TRUE
       ),
       
+      ####  TEXT AREA TO INSERT TO USE EXTREMA OF INTERVALS TO USE IN THE LEGEND OF THE SPATIAL PLOT ####
+      
+      textAreaInput(
+        inputId="ValuesForLegend",
+        label="Insert values to use in the legend of the spatial plot",
+        value = "",
+        placeholder = "value1,value2,value3,value4,value5,value6"
+      ),
+      
       
       #### DOWNLOAD BUTTON FOR SPATIAL PLOT ####
       selectInput("FormatDownloadSpatialPlot",label="Select format to use to download the Spatial Plot",choices = c("jpeg","pdf","html"),selected = "jpeg"),
@@ -153,7 +162,8 @@ server <- function(input,output,session){
  })
  
 
- #### getting selected date and variable
+ #### getting selected date,variable,setOfRegions,ValuesForLegend
+ 
  date <- reactive({
    req(input$ChoosedDate)
    as.Date(input$ChoosedDate)
@@ -169,6 +179,21 @@ server <- function(input,output,session){
    
    req(input$RegToPlot)
    input$RegToPlot
+ })
+ 
+ 
+ ###update TextArea default value
+ 
+ observeEvent(variable(),{
+   
+   values <- get_bins("",data(),variable())
+   updateTextAreaInput(inputId = "ValuesForLegend",value = values)
+ })
+ 
+ ValuesForLegend <- reactive({
+   
+   req(input$ValuesForLegend)
+   get_bins(input$ValuesForLegend,data(),variable())
  })
  
  
@@ -206,7 +231,7 @@ server <- function(input,output,session){
    tmap_options(check.and.fix = TRUE)
    
    tm_shape(dataForSpatialPlot())+
-     tm_polygons(col=variable())
+     tm_polygons(col=variable(),breaks = ValuesForLegend())
  })
  
  output$SpatialPlot <- renderTmap({

@@ -30,14 +30,14 @@ ui <- fluidPage(
                 multiple = TRUE,
                 accept = c('.shp','.dbf','.shx','.prj')),
       
-      #### WIDGET TO SELECT COLUMN CONTAINING REGIONS' NAMES ON DATA FILE
+      #### WIDGET TO SELECT COLUMN CONTAINING LOCATIONS' NAMES ON DATA FILE
       
       selectInput("colLocNameDataFile",
-                  label= "Selecting the column containing localities' names in the data file",
+                  label= "Selecting the column containing locations' names in the data file",
                   choices=NULL
       ),
       
-      #### WIDGET TO SELECT COLUMN CONTAINING REGIONS' NAMES ON SHAPE FILE
+      #### WIDGET TO SELECT COLUMN CONTAINING LOCATIONS' NAMES ON SHAPE FILE
       
       selectInput("colLocNameShapeFile",
                   label= "Selecting the column containing locations' names in the shape file",
@@ -66,6 +66,14 @@ ui <- fluidPage(
                       choices=c("first_date","last_date"),
                       selected = NULL,
                       animate = TRUE
+      ),
+      
+      ####  TEXT AREA TO INSERT TO USE EXTREMA OF INTERVALS TO USE IN THE LEGEND OF THE SPATIAL PLOT ####
+      
+      textAreaInput(
+        inputId="ValuesForLegend",
+        label="Insert values to use in the legend of the spatial plot",
+        value = ""
       ),
       
       #### DOWNLOAD BUTTON FOR SPATIAL PLOT ####
@@ -156,7 +164,7 @@ server <- function(input,output,session){
   })
   
   
-  #### getting selected date and variable and locations for generating plots
+  #### getting selected date,variable and locations for generating plots
   date <- reactive({
     req(input$ChoosedDate)
     as.Date(input$ChoosedDate)
@@ -173,6 +181,21 @@ server <- function(input,output,session){
     req(input$locToPlot)
     input$locToPlot
   })
+  
+  ###update TextArea default value
+  
+  observeEvent(variable(),{
+    
+    values <- get_bins("",data(),variable())
+    updateTextAreaInput(inputId = "ValuesForLegend",value = values)
+  })
+  
+  ValuesForLegend <- reactive({
+    
+    req(input$ValuesForLegend)
+    get_bins(input$ValuesForLegend,data(),variable())
+  })
+  
   
   
 
@@ -207,7 +230,7 @@ server <- function(input,output,session){
     tmap_options(check.and.fix = TRUE)
     
     tm_shape(dataForSpatialPlot())+
-      tm_symbols(col=variable(),popup.vars = TRUE)
+      tm_symbols(col=variable(),popup.vars = TRUE,breaks =ValuesForLegend())
   })
   output$SpatialPlot <- renderTmap({
     

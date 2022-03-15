@@ -73,6 +73,9 @@ renameColumn <- function(df,oldName,newName){
   
 }
 
+
+### function used to generate data for spatial plot
+
 generateDataForSpatialPlot <- function(data,map,variable,date){
   
   df <- data[data$date == date,c(variable,"region_name")]
@@ -82,6 +85,9 @@ generateDataForSpatialPlot <- function(data,map,variable,date){
   
   
 }
+
+
+#### function used to generate data for time series plot
 
 generateDataForTimeSeriesPlot <- function(data,variable,setOfRegions){
   
@@ -95,6 +101,23 @@ generateDataForTimeSeriesPlot <- function(data,variable,setOfRegions){
   a <- xts(x=s[,-ncol(s)],order.by=s$date)
   return(a)
                
+}
+
+
+### function used to get the bins to use in the legend of the spatial plot
+
+get_bins <- function(x,data,variable){
+  
+  if(x==''){
+    x_min <- min(data[,variable])
+    x_max <- max(data[,variable])
+    interval <- (x_max-x_min)/6
+    
+    return(c(x_min,x_min+interval,x_min+2*interval,x_min+3*interval,x_min+4*interval,x_max))
+  }else{
+    
+    return(as.numeric(unlist(strsplit(x,","))))
+  }
 }
 
 
