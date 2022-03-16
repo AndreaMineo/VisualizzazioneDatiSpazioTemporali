@@ -28,19 +28,21 @@ ui <- fluidPage(
                 multiple = TRUE,
                 accept = c('.shp','.dbf','.shx','.prj')),
       
-      #### WIDGET TO SELECT COLUMN CONTAINING REGIONS' NAMES ON DATA FILE
-      
-      selectInput("colRegNameDataFile",
-        label= "Selecting the column containing regions' names in the data file",
-        choices=NULL
-      ),
-      
       #### WIDGET TO SELECT COLUMN CONTAINING REGIONS' NAMES ON SHAPE FILE
       
       selectInput("colRegNameShapeFile",
                   label= "Selecting the column containing regions' names in the shape file",
                   choices=NULL
       ),
+      
+      
+      #### WIDGET TO SELECT COLUMN CONTAINING REGIONS' NAMES ON DATA FILE
+      
+      selectInput("colRegNameDataFile",
+                  label= "Selecting the column containing regions' names in the data file",
+                  choices=NULL
+      ),
+      
       
       #### WIDGET TO SELECT THE VARIABLE TO PLOT
       
@@ -108,6 +110,7 @@ ui <- fluidPage(
 
 server <- function(input,output,session){
   
+  options(shiny.maxRequestSize=30*1024^2)  
   
  ### reading data filename
  dataFileName <- reactive({
@@ -119,7 +122,8 @@ server <- function(input,output,session){
  ### loading data file
  data <- reactive({
    validate(
-     validate_dataFile(dataFileName())
+     validate_dataFile(dataFileName()) %then%
+     validate_dataFormat(dataFileName())
    )
    loadDataFile(dataFileName())
    })
@@ -137,7 +141,8 @@ server <- function(input,output,session){
  map <- reactive({
    validate(
      
-     validate_ShapeFile(shapeFileName())
+     validate_ShapeFile(shapeFileName())%then%
+     validate_mapFormat(shapeFileName())
    )
    loadShapeFile(input$filemap)
  })
@@ -156,18 +161,35 @@ server <- function(input,output,session){
    updateSelectInput(inputId = "colRegNameShapeFile", choices = ShapeColumns())
  })
  
- 
- ### updating columns names in data 
- updatedMap <- reactive({
+ ### updating columns names in data
+ mapRegNameCol <- reactive({
    req(input$colRegNameShapeFile)
-   renameColumn(map(),input$colRegNameShapeFile,"region_name")
+   input$colRegNameShapeFile
+ })
+ 
+ updatedMap <- reactive({
+   
+   validate(
+    validate_mapRegNameCol(mapRegNameCol(),map())
+   )
+   renameColumn(map(),mapRegNameCol(),"region_name")
  })
  
  
- ### updating columns names in map 
- updatedData <- reactive({
+ ### updating columns names in data
+ 
+ dataRegNameCol <- reactive({
    req(input$colRegNameDataFile)
-   renameColumn(data(),input$colRegNameDataFile,"region_name")
+   input$colRegNameDataFile
+   
+ })
+ updatedData <- reactive({
+   
+   validate(
+     validate_mapRegNameCol(mapRegNameCol(),map()) %then%
+     validate_dataRegNameCol(dataRegNameCol(),data(),updatedMap())
+   )
+   renameColumn(data(),dataRegNameCol(),"region_name")
    
  })
  
@@ -197,6 +219,9 @@ server <- function(input,output,session){
  
  variable <- reactive({
    req(input$variable)
+   validate(
+     validate_variable(input$variable,updatedData())
+   )
    input$variable
  })
  
@@ -228,7 +253,7 @@ server <- function(input,output,session){
  })
  
  dataForTimeSeriesPlot <- reactive({
-   generateDataForTimeSeriesPlot(updatedData(),variable(),setOfRegions ())
+   generateDataForTimeSeriesPlot(updatedData(),variable(),setOfRegions())
  })
  
  
@@ -324,8 +349,12 @@ server <- function(input,output,session){
  output$error <- renderText({
    
    validate(
-     validate_dataFile(dataFileName()),
-     validate_ShapeFile(shapeFileName())
+     validate_dataFile(dataFileName())%then%
+     validate_dataFormat(dataFileName()),
+     validate_ShapeFile(shapeFileName())%then%
+     validate_mapFormat(shapeFileName()),
+     validate_mapRegNameCol(mapRegNameCol(),map())%then%
+     validate_dataRegNameCol(dataRegNameCol(),data(),updatedMap())
    )
  })
  
