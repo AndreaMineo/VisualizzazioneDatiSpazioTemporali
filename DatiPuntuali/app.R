@@ -22,25 +22,27 @@ ui <- fluidPage(
                 multiple = FALSE,
                 accept = c("text/csv",
                            "text/comma-separated-values,text/plain",
-                           ".csv")),
+                           ".csv","xlsx")),
       
       #### WIDGET TO LOAD SHAPE FILE
       fileInput(inputId = "filemap",
                 label = "Upload map. Choose shapefile",
                 multiple = TRUE,
-                accept = c('.shp','.dbf','.shx','.prj')),
-      
-      #### WIDGET TO SELECT COLUMN CONTAINING LOCATIONS' NAMES ON DATA FILE
-      
-      selectInput("colLocNameDataFile",
-                  label= "Selecting the column containing locations' names in the data file",
-                  choices=NULL
-      ),
+                accept = c('.shp','.dbf','.shx','.prj',".RData")),
+     
       
       #### WIDGET TO SELECT COLUMN CONTAINING LOCATIONS' NAMES ON SHAPE FILE
       
       selectInput("colLocNameShapeFile",
                   label= "Selecting the column containing locations' names in the shape file",
+                  choices=NULL
+      ),
+      
+      
+      #### WIDGET TO SELECT COLUMN CONTAINING LOCATIONS' NAMES ON DATA FILE
+      
+      selectInput("colLocNameDataFile",
+                  label= "Selecting the column containing locations' names in the data file",
                   choices=NULL
       ),
       
@@ -73,7 +75,8 @@ ui <- fluidPage(
       textAreaInput(
         inputId="ValuesForLegend",
         label="Insert values to use in the legend of the spatial plot",
-        value = ""
+        value = "",
+        placeholder = "value1,value2,...,valueN"
       ),
       
       #### DOWNLOAD BUTTON FOR SPATIAL PLOT ####
@@ -89,6 +92,13 @@ ui <- fluidPage(
     ),
     
     mainPanel(
+      
+      #### ERROR TEXT OUTPUT ####
+      
+      textOutput("error"),
+      
+      br(),br(),
+      
       #### TIME SERIES PLOT
       dygraphOutput("TimeSeriesPlot"),
       
@@ -107,16 +117,37 @@ server <- function(input,output,session){
   options(shiny.maxRequestSize=30*1024^2)
   
   ### loading data file
-  data <- reactive({
+  dataFileName <- reactive({
     req(input$dataFile)
-    loadDataFile(input$dataFile)
+    input$dataFile
   })
   
+  
+  data <- reactive({
+    validate(
+      validate_dataFile(dataFileName()) %then%
+      validate_dataFormat(dataFileName())
+    )
+    loadDataFile(dataFileName())
+  })
+  
+  
+  
   ### loading shape file
-  map <- reactive({
+  
+  shapeFileName <- reactive({
     
     req(input$filemap)
-    loadShapeFile(input$filemap)
+    input$filemap
+  })
+  
+  map <- reactive({
+    validate(
+      
+      validate_ShapeFile(shapeFileName())%then%
+      validate_mapFormat(shapeFileName())
+    )
+    loadShapeFile(shapeFileName())
   })
   
   
@@ -135,16 +166,35 @@ server <- function(input,output,session){
   
   
   ### updating columns names in data 
-  updatedMap <- reactive({
+  
+  mapLocNameCol <- reactive({
     req(input$colLocNameShapeFile)
-    renameColumn(map(),input$colLocNameShapeFile,"location_name")
+    input$colLocNameShapeFile
+  })
+  
+  
+  updatedMap <- reactive({
+    validate(
+      validate_mapLocNameCol(mapLocNameCol(),map())
+    )
+    renameColumn(map(),mapLocNameCol(),"location_name")
   })
   
   
   ### updating columns names in map 
-  updatedData <- reactive({
+  
+  dataLocNameCol <- reactive({
     req(input$colLocNameDataFile)
-    renameColumn(data(),input$colLocNameDataFile,"location_name")
+    input$colLocNameDataFile
+    
+  })
+  
+  updatedData <- reactive({
+    validate(
+      validate_mapLocNameCol(mapLocNameCol(),map()) %then%
+      validate_dataLocNameCol(dataLocNameCol(),data(),updatedMap())
+    )
+    renameColumn(data(),dataLocNameCol(),"location_name")
     
   })
   
@@ -173,6 +223,9 @@ server <- function(input,output,session){
   
   variable <- reactive({
     req(input$variable)
+    validate(
+      validate_variable(input$variable,updatedData())
+    )
     input$variable
   })
   
@@ -193,12 +246,15 @@ server <- function(input,output,session){
   ValuesForLegend <- reactive({
     
     req(input$ValuesForLegend)
+    validate(
+      validate_valuesForLegend(input$ValuesForLegend)
+    )
     get_bins(input$ValuesForLegend,data(),variable())
   })
   
   
   
-
+  
   #### generate data for plots
   dataForSpatialPlot <- reactive({
     generateDataForSpatialPlot(updatedData(),updatedMap(),variable(),date())
@@ -294,7 +350,17 @@ server <- function(input,output,session){
     
   )
   
-  
+  output$error <- renderText({
+    
+    validate(
+      validate_dataFile(dataFileName())%then%
+        validate_dataFormat(dataFileName()),
+      validate_ShapeFile(shapeFileName())%then%
+        validate_mapFormat(shapeFileName()),
+      validate_mapLocNameCol(mapLocNameCol(),map())%then%
+        validate_dataLocNameCol(dataLocNameCol(),data(),updatedMap())
+    )
+  })
   
   
   
@@ -303,3 +369,4 @@ server <- function(input,output,session){
 }
 
 shinyApp(ui = ui, server = server)
+

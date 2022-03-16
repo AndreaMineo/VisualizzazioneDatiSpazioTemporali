@@ -122,21 +122,22 @@ validate_mapFormat <- function(filename){
   
 }
 
-validate_mapRegNameCol <- function(name,map){
+validate_mapLocNameCol <- function(name,map){
   
   temp <- map
-  names(temp)[names(temp) == name] <- "region_name"
-  if(is.character(temp$region_name)){
+  names(temp)[names(temp) == name] <- "location_name"
+  print(paste("column name is name",name))
+  if(is.character(temp$location_name)){
     return(NULL)
   }else{
-    return("The column of map containing regions' name must be of type character")
+    return("The column of map containing locations' name must be of type character")
   }
 }
 
-validate_dataRegNameCol <- function(name,data,updatedMap){
+validate_dataLocNameCol <- function(name,data,updatedMap){
   
   if(is.character(data[,name])){
-    names_of_map <- sort(unique(updatedMap$region_name))
+    names_of_map <- sort(unique(updatedMap$location_name))
     names_of_data <- sort(unique(data[,name]))
     if(names_of_data %in% names_of_map){
       return(NULL)
@@ -144,7 +145,7 @@ validate_dataRegNameCol <- function(name,data,updatedMap){
       return("Error.Some of the entries on the selected column of data have no match in the selected column of map")
     }
   }else{
-    return("The column of data containing regions' name must be of type character")
+    return("The column of data containing locations' name must be of type character")
   }
 
 }
@@ -179,3 +180,4 @@ validate_valuesForLegend <- function(values){
     return("Error.Values used to generate the legend of the spatial plot must be ordered in ascending order")
   }
 }
+
