@@ -159,3 +159,24 @@ validate_variable <- function(name,data){
   }
   
 }
+
+validate_valuesForLegend <- function(values){
+  
+  if(length(grep(",",values))==0){
+    
+    return("Error.When inserting values to use in the legend of the spatial plot separate them using a comma")
+  }
+  print("ciao")
+  if(any(is.na(as.numeric(unlist(strsplit(values,",")))))){
+    return("Error.Only numeric values can be used to generate the legend of the spatial plot")
+  }
+  
+  values_as_numeric <- as.numeric(unlist(strsplit(values,",")))
+  sorted_values_as_numeric <- sort(values_as_numeric)
+  
+  if(all(sorted_values_as_numeric == values_as_numeric)){
+    return(NULL)
+  }else{
+    return("Error.Values used to generate the legend of the spatial plot must be ordered in ascending order")
+  }
+}

@@ -74,7 +74,7 @@ ui <- fluidPage(
         inputId="ValuesForLegend",
         label="Insert values to use in the legend of the spatial plot",
         value = "",
-        placeholder = "value1,value2,value3,value4,value5,value6"
+        placeholder = "value1,value2,...,valueN"
       ),
       
       
@@ -243,6 +243,9 @@ server <- function(input,output,session){
  ValuesForLegend <- reactive({
    
    req(input$ValuesForLegend)
+   validate(
+     validate_valuesForLegend(input$ValuesForLegend)
+   )
    get_bins(input$ValuesForLegend,data(),variable())
  })
  
