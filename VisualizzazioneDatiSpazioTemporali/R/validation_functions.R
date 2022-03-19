@@ -10,6 +10,7 @@ validate_dataFile <- function(filename){
 
   ext <- tools::file_ext(filename$datapath)
 
+  print(ext)
   if(ext %in% c("csv","xlsx")){
     return(NULL)
   }else{
@@ -77,13 +78,10 @@ validate_dataFormat <- function(filename){
     return("Uploaded data is invalid.Impossible to convert the first column into a Date column")
   }else{
 
-    for(col in names(data)){
-
-      t <- c(t,is.numeric(data[,col]))
-    }
+    test <- lapply(names(data),function(x) (is.numeric(data[,x])))
 
     ### test if data contains at least a numeric column
-    if(length(grep(TRUE,t))>0){
+    if(length(grep(TRUE,test))>0){
 
       return(NULL)
     }else{

@@ -144,3 +144,4 @@ get_bins <- function(x,data,variable){
 
 
 
+

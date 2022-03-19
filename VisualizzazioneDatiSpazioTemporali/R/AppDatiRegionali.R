@@ -12,25 +12,30 @@ AppDatiRegionali <- function(){
 
   ui <- shiny::fluidPage(
 
+    shiny::titlePanel(
+      shiny::h1("Spatio-Temporal data visualization",align="center")
+    ),
+
     shiny::sidebarLayout(
 
       shiny::sidebarPanel(
 
-
-
-        shiny::fileInput("dataFile", "Selecting data file",
-                         multiple = FALSE,
-                         accept = c("text/csv",
-                                    "text/comma-separated-values,text/plain",
-                                    ".csv","xlsx")),
-
+        shiny::h4("User's Input"),
 
         shiny::fileInput(inputId = "filemap",
                          label = "Upload map. Choose shapefile",
                          multiple = TRUE,
                          accept = c('.shp','.dbf','.shx','.prj',".RData")),
 
-
+        shiny::fluidRow(
+        shiny::column(10,shiny::fileInput("dataFile", "Selecting data file",
+                         multiple = FALSE,
+                         accept = c("text/csv",
+                                    "text/comma-separated-values,text/plain",
+                                    ".csv","xlsx"))
+        ),
+        shiny::column(2,shiny::selectInput("delimiter",label="delimiter",choices =c(",",";","/"),selected = ","))
+      ),
 
 
         shiny::selectInput("colRegNameShapeFile",
@@ -83,7 +88,7 @@ AppDatiRegionali <- function(){
 
 
         shiny::selectInput("FormatDownloadTimeSeriesPlot",label="Select format to use to download the Time Series Plot",choices = c("jpeg","pdf","html"),selected = "jpeg"),
-        shiny::downloadButton("DownloadTimeSeriesPlot", label = "Download Time Series Plot")
+        shiny::downloadButton("DownloadTimeSeriesPlot", label = "Download Time Series Plot"),
 
 
 
@@ -91,18 +96,14 @@ AppDatiRegionali <- function(){
 
       shiny::mainPanel(
 
-        #### ERROR TEXT OUTPUT ####
-
-        shiny::textOutput("error"),
-
-        shiny::br(),shiny::br(),
-
         #### TIME SERIES PLOT
+        shiny::h4("Time Series Plot"),
         dygraphs::dygraphOutput("TimeSeriesPlot"),
 
         shiny::br(),shiny::br(),
 
         ####SPATIAL PLOT
+        shiny::h4("Spatial Plot(spatial entities as regions in the space)"),
         tmap::tmapOutput("SpatialPlot")
       )
     )
@@ -283,8 +284,8 @@ AppDatiRegionali <- function(){
       tmap::tmap_mode('view')
       tmap::tmap_options(check.and.fix = TRUE)
 
-      tm_shape(dataForSpatialPlot())+
-        tm_polygons(col=variable(),breaks = ValuesForLegend())
+      tmap::tm_shape(dataForSpatialPlot())+
+        tmap::tm_polygons(col=variable(),breaks = ValuesForLegend())
     })
     output$SpatialPlot <- tmap::renderTmap({
 
@@ -324,6 +325,7 @@ AppDatiRegionali <- function(){
 
           htmlwidgets::saveWidget(TimeSeriesPlot(),file="temp.html")
           webshot::webshot(url="temp.html",file=file)
+          unlink("temp.html")
         }
 
       }
@@ -335,36 +337,32 @@ AppDatiRegionali <- function(){
 
     output$DownloadSpatialPlot <- shiny::downloadHandler(
 
+
       filename = function(){
 
         paste("spatialPlot.",formatDownloadSpatialPlot(),sep='')
+
+
       }
       ,
       content = function(file){
 
-        tmap::tmap_save(SpatialPlot(),file=file)
+        print(formatDownloadSpatialPlot())
 
+        if(formatDownloadSpatialPlot() == "html"){
+
+          tmap::tmap_save(SpatialPlot(),file=file)
+
+        }else{
+
+          tmap::tmap_save(SpatialPlot(),"temp.html")
+          webshot::webshot(url="temp.html",file=file)
+          unlink("temp.html")
+        }
       }
-
     )
 
-    output$error <- shiny::renderText({
-
-      shiny::validate(
-        validate_dataFile(dataFileName())%then%
-          validate_dataFormat(dataFileName()),
-        validate_ShapeFile(shapeFileName())%then%
-          validate_mapFormat(shapeFileName()),
-        validate_mapRegNameCol(mapRegNameCol(),map())%then%
-          validate_dataRegNameCol(dataRegNameCol(),data(),updatedMap())
-      )
-    })
-
-
-
-
-
-  }
+}
 
   shiny::shinyApp(ui = ui, server = server)
 
