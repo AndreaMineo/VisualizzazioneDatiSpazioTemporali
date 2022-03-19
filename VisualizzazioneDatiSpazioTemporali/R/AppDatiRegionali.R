@@ -122,11 +122,16 @@ AppDatiRegionali <- function(){
       input$dataFile
     })
 
+    delimiter <- shiny::reactive({
+
+      req(input$delimiter)
+      input$delimiter
+    })
 
     data <- shiny::reactive({
       shiny::validate(
         validate_dataFile(dataFileName()) %then%
-          validate_dataFormat(dataFileName())
+          validate_dataFormat(dataFileName(),delimiter())
       )
       loadDataFile(dataFileName())
     })
@@ -346,8 +351,6 @@ AppDatiRegionali <- function(){
       }
       ,
       content = function(file){
-
-        print(formatDownloadSpatialPlot())
 
         if(formatDownloadSpatialPlot() == "html"){
 

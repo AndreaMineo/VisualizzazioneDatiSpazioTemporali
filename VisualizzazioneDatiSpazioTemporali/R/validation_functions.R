@@ -10,9 +10,9 @@ validate_dataFile <- function(filename){
 
   ext <- tools::file_ext(filename$datapath)
 
-  print(ext)
   if(ext %in% c("csv","xlsx")){
     return(NULL)
+
   }else{
 
     return("Invalid data file.Use as data file a csv file or a xlsx file")
@@ -52,13 +52,16 @@ validate_ShapeFile <- function(fileDataFrame){
 }
 
 
-validate_dataFormat <- function(filename){
+validate_dataFormat <- function(filename,delimiter){
 
   extension <- tools::file_ext(filename$datapath)
 
   if(extension =='csv'){
 
-    data <- read.csv(filename$datapath)
+    data <- tryCatch({read.csv(filename$datapath,sep = delimiter)},error = function(e){return(NULL)})
+    if(is.null(data)){
+      return("Error,impossible to read selected csv file. Please check if the delimiter value is correct")
+    }
   }
   if(extension=='xlsx'){
 
@@ -143,7 +146,7 @@ validate_dataRegNameCol <- function(name,data,updatedMap){
   if(is.character(data[,name])){
     names_of_map <- sort(unique(updatedMap$region_name))
     names_of_data <- sort(unique(data[,name]))
-    if(names_of_data %in% names_of_map){
+    if(all(names_of_data %in% names_of_map)){
       return(NULL)
     }else{
       return("Error.Some of the entries on the selected column of data have no match in the selected column of map")
@@ -159,7 +162,7 @@ validate_dataLocNameCol <- function(name,data,updatedMap){
   if(is.character(data[,name])){
     names_of_map <- sort(unique(updatedMap$location_name))
     names_of_data <- sort(unique(data[,name]))
-    if(names_of_data %in% names_of_map){
+    if(all(names_of_data %in% names_of_map)){
       return(NULL)
     }else{
       return("Error.Some of the entries on the selected column of data have no match in the selected column of map")
