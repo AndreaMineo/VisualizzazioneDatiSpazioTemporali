@@ -123,13 +123,16 @@ server <- function(input,output,session){
     input$dataFile
   })
 
-
+  delimiter <- reactive({
+    req(input$delimiter)
+    input$delimiter
+  })
   data <- shiny::reactive({
     shiny::validate(
       validate_dataFile(dataFileName()) %then%
-      validate_dataFormat(dataFileName())
+      validate_dataFormat(dataFileName(),delimiter())
     )
-    loadDataFile(dataFileName())
+    loadDataFile(dataFileName(),delimiter())
   })
 
 

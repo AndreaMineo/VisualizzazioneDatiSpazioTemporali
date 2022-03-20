@@ -133,7 +133,7 @@ AppDatiRegionali <- function(){
         validate_dataFile(dataFileName()) %then%
           validate_dataFormat(dataFileName(),delimiter())
       )
-      loadDataFile(dataFileName())
+      loadDataFile(dataFileName(),delimiter())
     })
 
 

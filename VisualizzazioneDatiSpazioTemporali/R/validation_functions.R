@@ -146,10 +146,10 @@ validate_dataRegNameCol <- function(name,data,updatedMap){
   if(is.character(data[,name])){
     names_of_map <- sort(unique(updatedMap$region_name))
     names_of_data <- sort(unique(data[,name]))
-    if(all(names_of_data %in% names_of_map)){
+    if(any(names_of_data %in% names_of_map)){
       return(NULL)
     }else{
-      return("Error.Some of the entries on the selected column of data have no match in the selected column of map")
+      return("Error.None of the entries in the selected column of data have a match in the selected column of map")
     }
   }else{
     return("The column of data containing regions' name must be of type character")
@@ -162,10 +162,10 @@ validate_dataLocNameCol <- function(name,data,updatedMap){
   if(is.character(data[,name])){
     names_of_map <- sort(unique(updatedMap$location_name))
     names_of_data <- sort(unique(data[,name]))
-    if(all(names_of_data %in% names_of_map)){
+    if(any(names_of_data %in% names_of_map)){
       return(NULL)
     }else{
-      return("Error.Some of the entries on the selected column of data have no match in the selected column of map")
+      return("Error.None of the entries in the selected column of data have a match in the selected column of map")
     }
   }else{
     return("The column of data containing locations' name must be of type character")
@@ -190,14 +190,14 @@ validate_valuesForLegend <- function(values){
 
     return("Error.When inserting values to use in the legend of the spatial plot separate them using a comma")
   }
-  if(any(is.na(as.numeric(unlist(strsplit(values,",")))))){
+  if(all(is.na(as.numeric(unlist(strsplit(values,",")))))){
     return("Error.Only numeric values can be used to generate the legend of the spatial plot")
   }
 
   values_as_numeric <- as.numeric(unlist(strsplit(values,",")))
   sorted_values_as_numeric <- sort(values_as_numeric)
 
-  if(all(sorted_values_as_numeric == values_as_numeric)){
+  if(any(sorted_values_as_numeric == values_as_numeric)){
     return(NULL)
   }else{
     return("Error.Values used to generate the legend of the spatial plot must be ordered in ascending order")

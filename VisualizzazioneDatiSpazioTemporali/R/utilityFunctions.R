@@ -2,12 +2,12 @@
 library(tmap)
 
 
-loadDataFile <- function(filename){
+loadDataFile <- function(filename,delimiter){
 
   extension <- tools::file_ext(filename$datapath)
   if(extension =='csv'){
 
-    data <- read.csv(filename$datapath)
+    data <- read.csv(filename$datapath,sep=delimiter)
   }
   if(extension=='xlsx'){
 
