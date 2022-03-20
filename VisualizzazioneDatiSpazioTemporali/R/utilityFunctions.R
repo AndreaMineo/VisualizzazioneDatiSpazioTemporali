@@ -133,7 +133,7 @@ get_bins <- function(x,data,variable){
   if(x==''){
     x_min <- min(data[,variable])
     x_max <- max(data[,variable])
-    interval <- (x_max-x_min)/6
+    interval <- (x_max-x_min)/5
 
     return(c(x_min,x_min+interval,x_min+2*interval,x_min+3*interval,x_min+4*interval,x_max))
   }else{
