@@ -24,19 +24,15 @@ loadDataFile <- function(filename,delimiter){
 
 loadShapeFile<- function(InputFilesdf){
 
-  if(length(InputFilesdf$datapath)==1){
-    extension <- tools::file_ext(InputFilesdf$datapath)
+  if(nrow(InputFilesdf)==1){
     map <- NULL
-    if(extension== 'RData'){
-      a <- load(InputFilesdf$datapath)
-      for(i in 1:length(a)){
-
-        if(class(get(a[i]))[1] %in% list('sf','SpatialPolygonsDataFrame')){
+    a <- load(InputFilesdf$datapath)
+    for(i in 1:length(a)){
+      if(class(get(a[i]))[1] %in% list('sf','SpatialPolygonsDataFrame')){
           map <- get(a[i])
           break
         }
       }
-    }
   }
   else{
     tempdirname <- dirname(InputFilesdf$datapath[1])
