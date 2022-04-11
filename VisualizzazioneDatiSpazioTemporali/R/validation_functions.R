@@ -115,7 +115,7 @@ validate_RDataFormat <- function(filename,type){
   if(type=="areal"){
     valid_classes <- c("sf","SpatialPolygonsDataFrame","SpatVector")
     valid_geometry_terra <- c("polygons")
-    valid_geometry_sf <- c("MULTIPOLYGONS")
+    valid_geometry_sf <- c("MULTIPOLYGON")
   }else{
     valid_classes <- c("sf","SpatialPolygonsDataFrame","SpatialPointsDataFrame","SpatVector")
     valid_geometry_terra <- c("polygons","points")
