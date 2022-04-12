@@ -102,7 +102,7 @@ validate_ShapeFileFormat <- function(filename,type){
     valid_geometry <- c("MULTIPOLYGON","MULTIPOINT")
   }
   print("ciao")
-  map <- loadShapeFile(filename)
+  map <- loadShapeFile(filename,type)
   print("ciao2")
   if(all(sf::st_geometry_type(map,by_geometry = TRUE) %in% valid_geometry)){
     return(NULL)
@@ -115,11 +115,11 @@ validate_RDataFormat <- function(filename,type){
   if(type=="areal"){
     valid_classes <- c("sf","SpatialPolygonsDataFrame","SpatVector")
     valid_geometry_terra <- c("polygons")
-    valid_geometry_sf <- c("MULTIPOLYGON")
+    valid_geometry_sf <- c("MULTIPOLYGON","POLYGON")
   }else{
     valid_classes <- c("sf","SpatialPolygonsDataFrame","SpatialPointsDataFrame","SpatVector")
     valid_geometry_terra <- c("polygons","points")
-    valid_geometry_sf <- c("MULTIPOLYGON","MULTIPOINT")
+    valid_geometry_sf <- c("MULTIPOLYGON","POLYGON","MULTIPOINT","POINT")
   }
   map <- NULL
   a <- load(filename$datapath)
@@ -130,21 +130,21 @@ validate_RDataFormat <- function(filename,type){
     }
   }
   if(is.null(map)){
-    return(paste("Uploaded map is invalid, RData file must contain an istance of one of the following classes",as.character(valid_classes)))
+    return("Uploaded map is invalid, RData file must contain an istance of one of the following classes (sf,SpatialPolygonsDataFrame,SpatVector)")
   }
 
   if(class(map)[1]=="sf"){
     if(all(sf::st_geometry_type(map,by_geometry = TRUE) %in% valid_geometry_sf)){
       return(NULL)
     }else{
-      return(paste("Invalid Map. The istance of class sf must have on of the following geometry types",as.character(valid_geometry_sf)))
+      return(paste("Invalid Map. The istance of class sf must have on of the following geometry types",paste(valid_geometry_sf,collapse = ",")))
     }
   }
   if(class(map)[1]=="SpatVector"){
     if(all(terra::geomtype(map) %in% valid_geometry_terra)){
       return(NULL)
     }else{
-      return(paste("Invalid Map. The istance of class SpatVector must have on of the following geometry types",as.character(valid_geometry_terra)))
+      return(paste("Invalid Map. The istance of class SpatVector must have on of the following geometry types",paste(valid_geometry_terra,collapse = ",")))
     }
   }
 }
@@ -237,7 +237,7 @@ validate_valuesForLegend <- function(values){
   values_as_numeric <- as.numeric(unlist(strsplit(values,",")))
   sorted_values_as_numeric <- sort(values_as_numeric)
 
-  if(any(sorted_values_as_numeric == values_as_numeric)){
+  if(all(sorted_values_as_numeric == values_as_numeric)){
     return(NULL)
   }else{
     return("Error.Values used to generate the legend of the spatial plot must be ordered in ascending order")

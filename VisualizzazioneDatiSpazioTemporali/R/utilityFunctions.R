@@ -22,17 +22,25 @@ loadDataFile <- function(filename,delimiter){
 }
 
 
-loadShapeFile<- function(InputFilesdf){
+loadShapeFile<- function(InputFilesdf,type){
 
+  if(type=="areal"){
+    valid_classes <- c("sf","SpatialPolygonsDataFrame","SpatVector")
+  }else{
+    valid_classes <- c("sf","SpatialPolygonsDataFrame","SpatialPointsDataFrame","SpatVector")
+  }
   if(nrow(InputFilesdf)==1){
     map <- NULL
     a <- load(InputFilesdf$datapath)
     for(i in 1:length(a)){
-      if(class(get(a[i]))[1] %in% list('sf','SpatialPolygonsDataFrame')){
+      if(class(get(a[i]))[1] %in% valid_classes){
           map <- get(a[i])
           break
-        }
       }
+    }
+    if(class(map)[1]!="sf"){
+      map <- sf::st_as_sf(map)
+    }
   }
   else{
     tempdirname <- dirname(InputFilesdf$datapath[1])
@@ -70,10 +78,7 @@ generateDataForSpatialPlotRegion <- function(data,map,variable,date){
   df <- data[data$date == date,c(variable,"region_name")]
   m <- map[,c("region_name")]
   merged <- merge(df,m,by="region_name")
-
   return(sf::st_as_sf(merged))
-
-
 }
 
 
@@ -83,10 +88,7 @@ generateDataForSpatialPlotLocation <- function(data,map,variable,date){
   df <- data[data$date == date,c(variable,"location_name")]
   m <- map[,c("location_name")]
   merged <- merge(df,m,by="location_name")
-
   return(sf::st_as_sf(merged))
-
-
 }
 
 
@@ -127,8 +129,8 @@ generateDataForTimeSeriesPlotLocation <- function(data,variable,setOfLocations){
 get_bins <- function(x,data,variable){
 
   if(x==''){
-    x_min <- min(data[,variable])
-    x_max <- max(data[,variable])
+    x_min <- min(stats::na.omit(data[,variable]))
+    x_max <- max(stats::na.omit(data[,variable]))
     interval <- (x_max-x_min)/5
 
     return(c(x_min,x_min+interval,x_min+2*interval,x_min+3*interval,x_min+4*interval,x_max))

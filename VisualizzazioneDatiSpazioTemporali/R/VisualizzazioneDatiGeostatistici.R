@@ -112,7 +112,7 @@ VisualizzazioneDatiGeostatistici <- function(){
 
   server <- function(input,output,session){
 
-    options(shiny.maxRequestSize=30*1024^2)
+    options(shiny.maxRequestSize=500*1024^2)
 
 
     ### loading data file
@@ -149,7 +149,7 @@ VisualizzazioneDatiGeostatistici <- function(){
         validate_ShapeFile(shapeFileName())%then%
           validate_mapFormat(shapeFileName(),"geostatistic")
       )
-      loadShapeFile(shapeFileName())
+      loadShapeFile(shapeFileName(),"geostatistical")
     })
 
 

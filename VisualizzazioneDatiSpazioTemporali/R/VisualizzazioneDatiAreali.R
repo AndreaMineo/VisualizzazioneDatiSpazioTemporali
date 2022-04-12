@@ -111,7 +111,7 @@ VisualizzazioneDatiAreali <- function(){
 
   server <- function(input,output,session){
 
-    options(shiny.maxRequestSize=30*1024^2)
+    options(shiny.maxRequestSize=500*1024^2)
 
 
     ### loading data file
@@ -150,7 +150,7 @@ VisualizzazioneDatiAreali <- function(){
         validate_ShapeFile(shapeFileName())%then%
           validate_mapFormat(shapeFileName(),"areal")
       )
-      loadShapeFile(shapeFileName())
+      loadShapeFile(shapeFileName(),"areal")
     })
 
 
