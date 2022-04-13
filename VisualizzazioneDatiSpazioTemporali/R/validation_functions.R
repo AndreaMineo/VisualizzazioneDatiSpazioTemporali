@@ -25,12 +25,12 @@ validate_ShapeFile <- function(fileDataFrame){
   l <- nrow(fileDataFrame)
   if(l==1){
     ext <- tools::file_ext(fileDataFrame$datapath)
-    if(ext == "RData"){
+    if(ext %in% c("RData","rda")){
 
       return(NULL)
     }else{
 
-      return("Invalid shape file. Use as shape file a RData file  or upload multiple files(shp,dbf,prj,shx)")
+      return("Invalid shape file. Use as shape file a RData file, a rda file or upload multiple files(shp,dbf,prj,shx)")
     }
   }else{
 
@@ -101,9 +101,7 @@ validate_ShapeFileFormat <- function(filename,type){
   }else{
     valid_geometry <- c("MULTIPOLYGON","MULTIPOINT")
   }
-  print("ciao")
   map <- loadShapeFile(filename,type)
-  print("ciao2")
   if(all(sf::st_geometry_type(map,by_geometry = TRUE) %in% valid_geometry)){
     return(NULL)
   }else{
