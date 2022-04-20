@@ -97,9 +97,9 @@ validate_dataFormat <- function(filename,delimiter){
 
 validate_ShapeFileFormat <- function(filename,type){
   if(type=="areal"){
-    valid_geometry <- c("MULTIPOLYGONS")
+    valid_geometry <- c("MULTIPOLYGON","POLYGON")
   }else{
-    valid_geometry <- c("MULTIPOLYGON","MULTIPOINT")
+    valid_geometry <- c("MULTIPOLYGON","POLYGON","MULTIPOINT","POINT")
   }
   map <- loadShapeFile(filename,type)
   if(all(sf::st_geometry_type(map,by_geometry = TRUE) %in% valid_geometry)){
@@ -241,4 +241,6 @@ validate_valuesForLegend <- function(values){
     return("Error.Values used to generate the legend of the spatial plot must be ordered in ascending order")
   }
 }
+
+
 

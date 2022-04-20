@@ -1,4 +1,4 @@
-#' Applicazione per la visualizzazione di dati spazio temporali caso dati regionali
+#' Applicazione per la visualizzazione di dati spazio temporali caso dati puntuali
 #'
 #' @description Shiny app per la visualizzazione di dati spazio temporali.
 #' Per maggiori informazioni riferirsi a:
@@ -8,44 +8,45 @@
 
 
 
-VisualizzazioneDatiAreali <- function(){
+VisualizzazioneDatiPuntuali <- function(){
 
   ui <- shiny::fluidPage(
 
     shiny::titlePanel("Spatio-Temporal data visualization"),
-
     shiny::sidebarLayout(
 
       shiny::sidebarPanel(
 
         shiny::h4("User's Input"),
+
         shiny::fileInput(inputId = "filemap",
-                                           label = "Upload map file",
-                                           multiple = TRUE,
-                                           accept = c('.shp','.dbf','.shx','.prj',".RData",".rda")
-        ),
+                         label = "Upload map file",
+                         multiple = TRUE,
+                         accept = c('.shp','.dbf','.shx','.prj',".RData")),
 
         shiny::fluidRow(
           shiny::column(9,shiny::fileInput("dataFile", "Upload time series data file",
                                             multiple = FALSE,
                                             accept = c("text/csv",
                                                        "text/comma-separated-values,text/plain",
-                                                       ".csv",".xlsx"))
+                                                       ".csv","xlsx"))
           ),
           shiny::column(3,shiny::selectInput("delimiter",label="delimiter",choices =c(",",";","/"),selected = ","))
         ),
 
 
-        shiny::selectInput("colRegNameShapeFile",
-                           label= "Selecting the column containing regions' names in the shape file",
+        #### WIDGET TO SELECT COLUMN CONTAINING LOCATIONS' NAMES ON SHAPE FILE
+
+        shiny::selectInput("colLocNameShapeFile",
+                           label= "Selecting the column containing locations' names in the shape file",
                            choices=NULL
         ),
 
 
 
 
-        shiny::selectInput("colRegNameDataFile",
-                           label= "Selecting the column containing regions' names in the data file",
+        shiny::selectInput("colLocNameDataFile",
+                           label= "Selecting the column containing locations' names in the data file",
                            choices=NULL
         ),
 
@@ -60,8 +61,8 @@ VisualizzazioneDatiAreali <- function(){
                            label = "Selecting plot mode",
                            choices = c("interactive","static"),
                            selected = "interactive"),
-        shiny::selectInput("regToPlot",
-                           label= "Selecting the set of regions to plot for time series plot",
+        shiny::selectInput("locToPlot",
+                           label= "Selecting the set of location to plot for time series plot",
                            choices=NULL,
                            selected = NULL,
                            multiple = TRUE
@@ -90,7 +91,7 @@ VisualizzazioneDatiAreali <- function(){
 
 
         shiny::selectInput("FormatDownloadTimeSeriesPlot",label="Select format to use to download the Time Series Plot",choices = c("jpeg","pdf","html"),selected = "jpeg"),
-        shiny::downloadButton("DownloadTimeSeriesPlot", label = "Download Time Series Plot"),
+        shiny::downloadButton("DownloadTimeSeriesPlot", label = "Download Time Series Plot")
 
 
 
@@ -124,12 +125,10 @@ VisualizzazioneDatiAreali <- function(){
       input$dataFile
     })
 
-    delimiter <- shiny::reactive({
-
+    delimiter <- reactive({
       req(input$delimiter)
       input$delimiter
     })
-
     data <- shiny::reactive({
       shiny::validate(
         validate_dataFile(dataFileName()) %then%
@@ -152,9 +151,9 @@ VisualizzazioneDatiAreali <- function(){
       shiny::validate(
 
         validate_ShapeFile(shapeFileName())%then%
-          validate_mapFormat(shapeFileName(),"areal")
+          validate_mapFormat(shapeFileName(),"geostatistic")
       )
-      loadShapeFile(shapeFileName(),"areal")
+      loadShapeFile(shapeFileName(),"geostatistical")
     })
 
 
@@ -162,55 +161,55 @@ VisualizzazioneDatiAreali <- function(){
     DataColumns <- shiny::reactive({names(data())})
 
     shiny::observeEvent(DataColumns(), {
-      shiny::updateSelectInput(inputId = "colRegNameDataFile", choices = DataColumns()[-1])
+      shiny::updateSelectInput(inputId = "colLocNameDataFile", choices = DataColumns()[-1])
     })
 
     ShapeColumns <- shiny::reactive({names(map())})
 
     shiny::observeEvent(ShapeColumns(), {
-      shiny::updateSelectInput(inputId = "colRegNameShapeFile", choices = ShapeColumns())
+      shiny::updateSelectInput(inputId = "colLocNameShapeFile", choices = ShapeColumns())
     })
 
 
 
-    mapRegNameCol <- shiny::reactive({
-      shiny::req(input$colRegNameShapeFile)
-      input$colRegNameShapeFile
+    mapLocNameCol <- shiny::reactive({
+      shiny::req(input$colLocNameShapeFile)
+      input$colLocNameShapeFile
     })
 
 
     updatedMap <- shiny::reactive({
       shiny::validate(
-        validate_mapRegNameCol(mapRegNameCol(),map())
+        validate_mapLocNameCol(mapLocNameCol(),map())
       )
-      renameColumn(map(),mapRegNameCol(),"region_name")
+      renameColumn(map(),mapLocNameCol(),"location_name")
     })
 
 
 
 
-    dataRegNameCol <- shiny::reactive({
-      shiny::req(input$colRegNameDataFile)
-      input$colRegNameDataFile
+    dataLocNameCol <- shiny::reactive({
+      shiny::req(input$colLocNameDataFile)
+      input$colLocNameDataFile
 
     })
 
     updatedData <- shiny::reactive({
       shiny::validate(
-        validate_mapRegNameCol(mapRegNameCol(),map()) %then%
-          validate_dataRegNameCol(dataRegNameCol(),data(),updatedMap())
+        validate_mapLocNameCol(mapLocNameCol(),map()) %then%
+          validate_dataLocNameCol(dataLocNameCol(),data(),updatedMap())
       )
-      renameColumn(data(),dataRegNameCol(),"region_name")
+      renameColumn(data(),dataLocNameCol(),"location_name")
 
     })
 
 
 
     shiny::observeEvent(updatedData(), {
-      values <- names(updatedData())[!names(updatedData()) %in% c("date","region_name")]
+      values <- names(updatedData())[!names(updatedData()) %in% c("date","location_name")]
       shiny::updateSelectInput(inputId = "variable", choices = values)
-      v <- c("all",unique(updatedData()$region_name))
-      shiny::updateSelectInput(inputId="regToPlot",choices=v,selected="all")
+      v <- c("all",unique(updatedData()$location_name))
+      shiny::updateSelectInput(inputId="locToPlot",choices=v,selected="all")
     })
 
 
@@ -235,10 +234,10 @@ VisualizzazioneDatiAreali <- function(){
       input$variable
     })
 
-    setOfRegations <- shiny::reactive({
+    setOfLocations <- shiny::reactive({
 
-      shiny::req(input$regToPlot)
-      input$regToPlot
+      shiny::req(input$locToPlot)
+      input$locToPlot
     })
 
 
@@ -263,11 +262,11 @@ VisualizzazioneDatiAreali <- function(){
 
 
     dataForSpatialPlot <- shiny::reactive({
-      generateDataForSpatialPlotRegion(updatedData(),updatedMap(),variable(),date())
+      generateDataForSpatialPlotLocation(updatedData(),updatedMap(),variable(),date())
     })
 
     dataForTimeSeriesPlot <- shiny::reactive({
-      generateDataForTimeSeriesPlotRegion(updatedData(),variable(),setOfRegations())
+      generateDataForTimeSeriesPlotLocation(updatedData(),variable(),setOfLocations())
     })
 
 
@@ -283,25 +282,23 @@ VisualizzazioneDatiAreali <- function(){
       TimeSeriesPlot()
     })
 
-    PlotMode <- reactive({
+
+    PlotMode <- shiny::reactive({
       req(input$PlotMode)
       input$PlotMode
     })
 
     SpatialPlot <- shiny::reactive({
 
-      if(PlotMode() == "static"){
-
+      if(PlotMode == "static"){
         tmap::tmap_options(check.and.fix = TRUE,basemaps.alpha = 0)
       }else{
         tmap::tmap_options(check.and.fix = TRUE,basemaps.alpha = 1)
       }
-
       tmap::tm_shape(dataForSpatialPlot())+
-        tmap::tm_polygons(col=variable(),breaks = ValuesForLegend())
-
-
+        tmap::tm_symbols(col=variable(),popup.vars = TRUE,breaks =ValuesForLegend())
     })
+
     output$SpatialPlot <- tmap::renderTmap({
 
       SpatialPlot()
@@ -352,27 +349,25 @@ VisualizzazioneDatiAreali <- function(){
 
     output$DownloadSpatialPlot <- shiny::downloadHandler(
 
-
       filename = function(){
 
         paste("spatialPlot.",formatDownloadSpatialPlot(),sep='')
-
-
       }
       ,
       content = function(file){
 
         if(formatDownloadSpatialPlot() == "html"){
-
           tmap::tmap_save(SpatialPlot(),file=file)
-
         }else{
 
           tmap::tmap_save(SpatialPlot(),"temp.html")
           webshot::webshot(url="temp.html",file=file)
           unlink("temp.html")
         }
+
+
       }
+
     )
 
   }
