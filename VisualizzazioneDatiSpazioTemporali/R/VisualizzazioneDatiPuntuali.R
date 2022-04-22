@@ -25,7 +25,7 @@ VisualizzazioneDatiPuntuali <- function(){
                          accept = c('.shp','.dbf','.shx','.prj',".RData")),
 
         shiny::fluidRow(
-          shiny::column(9,shiny::fileInput("dataFile", "Upload time series data file",
+          shiny::column(9,shiny::fileInput("dataFile", "Selecting data file",
                                             multiple = FALSE,
                                             accept = c("text/csv",
                                                        "text/comma-separated-values,text/plain",
@@ -58,9 +58,9 @@ VisualizzazioneDatiPuntuali <- function(){
                            selected = NULL
         ),
         shiny::selectInput(inputId = "PlotMode",
-                           label = "Selecting plot mode",
-                           choices = c("interactive","static"),
-                           selected = "interactive"),
+                           label="Selecting plot mode",
+                           choices = c("With basemap","Without basemap"),
+                           selected = "With basemap"),
         shiny::selectInput("locToPlot",
                            label= "Selecting the set of location to plot for time series plot",
                            choices=NULL,
@@ -290,11 +290,14 @@ VisualizzazioneDatiPuntuali <- function(){
 
     SpatialPlot <- shiny::reactive({
 
-      if(PlotMode == "static"){
-        tmap::tmap_options(check.and.fix = TRUE,basemaps.alpha = 0)
-      }else{
+
+      if(PlotMode()=="With basemap"){
         tmap::tmap_options(check.and.fix = TRUE,basemaps.alpha = 1)
+      }else{
+        tmap::tmap_options(check.and.fix = TRUE,basemaps.alpha = 0)
       }
+
+
       tmap::tm_shape(dataForSpatialPlot())+
         tmap::tm_symbols(col=variable(),popup.vars = TRUE,breaks =ValuesForLegend())
     })

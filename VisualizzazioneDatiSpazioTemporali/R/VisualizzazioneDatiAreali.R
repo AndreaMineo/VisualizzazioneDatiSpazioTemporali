@@ -58,8 +58,8 @@ VisualizzazioneDatiAreali <- function(){
         ),
         shiny::selectInput(inputId = "PlotMode",
                            label = "Selecting plot mode",
-                           choices = c("interactive","static"),
-                           selected = "interactive"),
+                           choices = c("With basemap","Without basemap"),
+                           selected = "With basemap"),
         shiny::selectInput("regToPlot",
                            label= "Selecting the set of regions to plot for time series plot",
                            choices=NULL,
@@ -290,11 +290,11 @@ VisualizzazioneDatiAreali <- function(){
 
     SpatialPlot <- shiny::reactive({
 
-      if(PlotMode() == "static"){
+      if(PlotMode() == "With basemap"){
 
-        tmap::tmap_options(check.and.fix = TRUE,basemaps.alpha = 0)
-      }else{
         tmap::tmap_options(check.and.fix = TRUE,basemaps.alpha = 1)
+      }else{
+        tmap::tmap_options(check.and.fix = TRUE,basemaps.alpha = 0)
       }
 
       tmap::tm_shape(dataForSpatialPlot())+

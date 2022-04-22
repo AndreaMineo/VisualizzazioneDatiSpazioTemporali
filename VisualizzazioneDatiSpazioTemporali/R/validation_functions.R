@@ -238,7 +238,7 @@ validate_valuesForLegend <- function(values){
   if(all(sorted_values_as_numeric == values_as_numeric)){
     return(NULL)
   }else{
-    return("Error.Values used to generate the legend of the spatial plot must be ordered in ascending order")
+    return("Error. Values used to generate the legend of the spatial plot must be ordered in ascending order")
   }
 }
 
