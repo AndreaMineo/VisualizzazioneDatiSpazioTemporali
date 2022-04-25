@@ -14,9 +14,7 @@ loadDataFile <- function(filename,delimiter){
     data <- readxl::read_excel(filename$datapath)
   }
 
-  names(data)[1] = "date"
-  data$date <- as.Date(data$date)
-
+  names(data)[1] = "timestamp"
   return(data)
 
 }
@@ -73,9 +71,9 @@ renameColumn <- function(df,oldName,newName){
 
 }
 
-generateDataForSpatialPlotRegion <- function(data,map,variable,date){
+generateDataForSpatialPlotRegion <- function(data,map,variable,timestamp){
 
-  df <- data[data$date == date,c(variable,"region_name")]
+  df <- data[data$timestamp == timestamp,c(variable,"region_name")]
   m <- map[,c("region_name")]
   merged <- merge(df,m,by="region_name")
   return(sf::st_as_sf(merged))
@@ -83,9 +81,9 @@ generateDataForSpatialPlotRegion <- function(data,map,variable,date){
 
 
 
-generateDataForSpatialPlotLocation <- function(data,map,variable,date){
+generateDataForSpatialPlotLocation <- function(data,map,variable,timestamp){
 
-  df <- data[data$date == date,c(variable,"location_name")]
+  df <- data[data$timestamp == timestamp,c(variable,"location_name")]
   m <- map[,c("location_name")]
   merged <- merge(df,m,by="location_name")
   return(sf::st_as_sf(merged))
@@ -97,13 +95,14 @@ generateDataForTimeSeriesPlotRegion <- function(data,variable,setOfLocations){
   if("all" %in% setOfLocations){
     s <- utils::unstack(data[,c(variable,"region_name")])
   }else{
-
     s <- utils::unstack(data[data$region_name %in% setOfLocations,c(variable,'region_name')])
   }
-  s[,"date"] <- (unique(data$date))
-  a <- xts::xts(x=s[,-ncol(s)],order.by=s$date)
-  return(a)
-
+  if(is.character(data$timestamp)){
+    s[,"timestamp"] <- unique(as.POSIXct(data$timestamp))
+    return(xts::xts(x=s[,-ncol(s)],order.by=s$timestamp))
+  }else{
+    return(cbind(data.frame(timpestamp=unique(data$timestamp)),s))
+  }
 }
 
 
@@ -114,13 +113,14 @@ generateDataForTimeSeriesPlotLocation <- function(data,variable,setOfLocations){
   if("all" %in% setOfLocations){
     s <- utils::unstack(data[,c(variable,"location_name")])
   }else{
-
     s <- utils::unstack(data[data$location_name %in% setOfLocations,c(variable,'location_name')])
   }
-  s[,"date"] <- (unique(data$date))
-  a <- xts::xts(x=s[,-ncol(s)],order.by=s$date)
-  return(a)
-
+  if(is.character(data$timestamp)){
+    s[,"timestamp"] <- unique(as.POSIXct(data$timestamp))
+    return(xts::xts(x=s[,-ncol(s)],order.by=s$timestamp))
+  }else{
+    return(cbind(data.frame(timpestamp=unique(data$timestamp)),s))
+  }
 }
 
 

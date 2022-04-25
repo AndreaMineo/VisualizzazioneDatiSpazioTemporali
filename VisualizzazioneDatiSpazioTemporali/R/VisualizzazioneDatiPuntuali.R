@@ -70,7 +70,7 @@ VisualizzazioneDatiPuntuali <- function(){
 
 
 
-        shinyWidgets::sliderTextInput("ChoosedDate",
+        shinyWidgets::sliderTextInput("ChoosedTimestamp",
                                       label="Selecting date for spatial plot",
                                       choices=c("first_date","last_date"),
                                       selected = NULL,
@@ -126,7 +126,7 @@ VisualizzazioneDatiPuntuali <- function(){
     })
 
     delimiter <- reactive({
-      req(input$delimiter)
+      shiny::req(input$delimiter)
       input$delimiter
     })
     data <- shiny::reactive({
@@ -151,9 +151,9 @@ VisualizzazioneDatiPuntuali <- function(){
       shiny::validate(
 
         validate_ShapeFile(shapeFileName())%then%
-          validate_mapFormat(shapeFileName(),"geostatistic")
+          validate_mapFormat(shapeFileName(),"puntual")
       )
-      loadShapeFile(shapeFileName(),"geostatistical")
+      loadShapeFile(shapeFileName(),"puntual")
     })
 
 
@@ -206,7 +206,7 @@ VisualizzazioneDatiPuntuali <- function(){
 
 
     shiny::observeEvent(updatedData(), {
-      values <- names(updatedData())[!names(updatedData()) %in% c("date","location_name")]
+      values <- names(updatedData())[!names(updatedData()) %in% c("timestamp","location_name")]
       shiny::updateSelectInput(inputId = "variable", choices = values)
       v <- c("all",unique(updatedData()$location_name))
       shiny::updateSelectInput(inputId="locToPlot",choices=v,selected="all")
@@ -215,14 +215,14 @@ VisualizzazioneDatiPuntuali <- function(){
 
     shiny::observeEvent(data(),{
       s <- unique(data()[,1])
-      shinyWidgets::updateSliderTextInput(session=session,inputId = "ChoosedDate",choices = as.character(s))
+      shinyWidgets::updateSliderTextInput(session=session,inputId = "ChoosedTimestamp",choices = s)
     })
 
 
 
-    date <- shiny::reactive({
-      shiny::req(input$ChoosedDate)
-      as.Date(input$ChoosedDate)
+    timestamp <- shiny::reactive({
+      shiny::req(input$ChoosedTimestamp)
+      input$ChoosedTimestamp
 
     })
 
@@ -262,7 +262,7 @@ VisualizzazioneDatiPuntuali <- function(){
 
 
     dataForSpatialPlot <- shiny::reactive({
-      generateDataForSpatialPlotLocation(updatedData(),updatedMap(),variable(),date())
+      generateDataForSpatialPlotLocation(updatedData(),updatedMap(),variable(),timestamp())
     })
 
     dataForTimeSeriesPlot <- shiny::reactive({
@@ -284,7 +284,7 @@ VisualizzazioneDatiPuntuali <- function(){
 
 
     PlotMode <- shiny::reactive({
-      req(input$PlotMode)
+      shiny::req(input$PlotMode)
       input$PlotMode
     })
 

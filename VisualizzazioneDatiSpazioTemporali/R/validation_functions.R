@@ -69,28 +69,29 @@ validate_dataFormat <- function(filename,delimiter){
   }
   s <- data[,1]
 
-  if(!is.character(s)){
-    return("Uploaded data is invalid.The first column must be of type character and must contains the timestamps of the time series")
+  if(!(is.character(s) | is.numeric(s))){
+    return("Uploaded data is invalid.The first column must be of type character or numeric and must contains the timestamps of the time series")
   }
 
-  converted <- tryCatch({as.Date(s)},error = function(e){return(s)})
+  if(is.character(s)){
+    converted <- tryCatch({as.POSIXct(s)},error = function(e){return(s)})
+    if(class(converted)[1]!="POSIXct"){
+      return("Updated data is invalid. Impossible to convert elements of the first column into POSIXct objects. Use valid formatted strings or a numeric elements as timestamps")
+    }
+  }
+
 
   ### test if the first column can be converted to Data
-  if(class(converted[1])!= "Date"){
 
-    return("Uploaded data is invalid.Impossible to convert the first column into a Date column")
-  }else{
-
-    test <- lapply(names(data),function(x) (is.numeric(data[,x])))
+  test <- lapply(names(data)[-1],function(x) (is.numeric(data[,x])))
 
     ### test if data contains at least a numeric column
-    if(length(grep(TRUE,test))>0){
+  if(length(grep(TRUE,test))>0){
 
-      return(NULL)
-    }else{
+    return(NULL)
+  }else{
 
-      return("Uploaded data is invalid,it doesn't contain any numeric column")
-    }
+    return("Uploaded data is invalid. Data must contains at least a numeric column")
   }
 
 }
@@ -161,10 +162,10 @@ validate_mapRegNameCol <- function(name,map){
 
   temp <- map
   names(temp)[names(temp) == name] <- "region_name"
-  if(is.character(temp$region_name)){
+  if(is.character(temp$region_name) | is.numeric(temp$region_name)){
     return(NULL)
   }else{
-    return("The column of map containing regions' name must be of type character")
+    return("The column of map containing regions' name must contain character or numeric elements")
   }
 }
 
@@ -172,16 +173,16 @@ validate_mapLocNameCol <- function(name,map){
 
   temp <- map
   names(temp)[names(temp) == name] <- "location_name"
-  if(is.character(temp$location_name)){
+  if(is.character(temp$location_name)|is.numeric(temp$location_name)){
     return(NULL)
   }else{
-    return("The column of map containing locations' name must be of type character")
+    return("The column of map containing locations' name must contain character or numeric elements")
   }
 }
 
 validate_dataRegNameCol <- function(name,data,updatedMap){
 
-  if(is.character(data[,name])){
+  if(is.character(data[,name]) | is.numeric(data[,name])){
     names_of_map <- sort(unique(updatedMap$region_name))
     names_of_data <- sort(unique(data[,name]))
     if(any(names_of_data %in% names_of_map)){
@@ -190,14 +191,14 @@ validate_dataRegNameCol <- function(name,data,updatedMap){
       return("Error.None of the entries in the selected column of data have a match in the selected column of map")
     }
   }else{
-    return("The column of data containing regions' name must be of type character")
+    return("The column of data containing regions' name must contain character or numeric elements")
   }
 
 }
 
 validate_dataLocNameCol <- function(name,data,updatedMap){
 
-  if(is.character(data[,name])){
+  if(is.character(data[,name]) | is.numeric(data[,name])){
     names_of_map <- sort(unique(updatedMap$location_name))
     names_of_data <- sort(unique(data[,name]))
     if(any(names_of_data %in% names_of_map)){
@@ -206,7 +207,7 @@ validate_dataLocNameCol <- function(name,data,updatedMap){
       return("Error.None of the entries in the selected column of data have a match in the selected column of map")
     }
   }else{
-    return("The column of data containing locations' name must be of type character")
+    return("The column of data containing locations' name must contain character or numeric elements")
   }
 
 }

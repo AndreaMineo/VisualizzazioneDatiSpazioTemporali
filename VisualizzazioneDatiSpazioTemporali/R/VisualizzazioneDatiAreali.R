@@ -69,8 +69,8 @@ VisualizzazioneDatiAreali <- function(){
 
 
 
-        shinyWidgets::sliderTextInput("ChoosedDate",
-                                      label="Selecting date for spatial plot",
+        shinyWidgets::sliderTextInput("ChoosedTimestamp",
+                                      label="Selecting timestamp for spatial plot",
                                       choices=c("first_date","last_date"),
                                       selected = NULL,
                                       animate = TRUE
@@ -126,7 +126,7 @@ VisualizzazioneDatiAreali <- function(){
 
     delimiter <- shiny::reactive({
 
-      req(input$delimiter)
+      shiny::req(input$delimiter)
       input$delimiter
     })
 
@@ -207,7 +207,7 @@ VisualizzazioneDatiAreali <- function(){
 
 
     shiny::observeEvent(updatedData(), {
-      values <- names(updatedData())[!names(updatedData()) %in% c("date","region_name")]
+      values <- names(updatedData())[!names(updatedData()) %in% c("timestamp","region_name")]
       shiny::updateSelectInput(inputId = "variable", choices = values)
       v <- c("all",unique(updatedData()$region_name))
       shiny::updateSelectInput(inputId="regToPlot",choices=v,selected="all")
@@ -216,14 +216,14 @@ VisualizzazioneDatiAreali <- function(){
 
     shiny::observeEvent(data(),{
       s <- unique(data()[,1])
-      shinyWidgets::updateSliderTextInput(session=session,inputId = "ChoosedDate",choices = as.character(s))
+      shinyWidgets::updateSliderTextInput(session=session,inputId = "ChoosedTimestamp",choices = s)
     })
 
 
 
-    date <- shiny::reactive({
-      shiny::req(input$ChoosedDate)
-      as.Date(input$ChoosedDate)
+    timestamp <- shiny::reactive({
+      shiny::req(input$ChoosedTimestamp)
+      input$ChoosedTimestamp
 
     })
 
@@ -263,7 +263,7 @@ VisualizzazioneDatiAreali <- function(){
 
 
     dataForSpatialPlot <- shiny::reactive({
-      generateDataForSpatialPlotRegion(updatedData(),updatedMap(),variable(),date())
+      generateDataForSpatialPlotRegion(updatedData(),updatedMap(),variable(),timestamp())
     })
 
     dataForTimeSeriesPlot <- shiny::reactive({
@@ -273,7 +273,6 @@ VisualizzazioneDatiAreali <- function(){
 
 
     TimeSeriesPlot <- shiny::reactive({
-
       d <- dygraphs::dyRangeSelector(dygraphs::dygraph(dataForTimeSeriesPlot()))
       dygraphs::dyLegend(d,show = 'onmouseover',width = 400)
 
@@ -284,7 +283,7 @@ VisualizzazioneDatiAreali <- function(){
     })
 
     PlotMode <- reactive({
-      req(input$PlotMode)
+      shiny::req(input$PlotMode)
       input$PlotMode
     })
 
