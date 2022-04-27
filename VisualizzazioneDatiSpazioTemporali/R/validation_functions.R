@@ -21,19 +21,17 @@ validate_dataFile <- function(filename){
 
 
 validate_ShapeFile <- function(fileDataFrame){
-
-  l <- nrow(fileDataFrame)
+    l <- nrow(fileDataFrame)
   if(l==1){
     ext <- tools::file_ext(fileDataFrame$datapath)
     if(ext %in% c("RData","rda")){
 
       return(NULL)
     }else{
-
       return("Invalid shape file. Use as shape file a RData file, a rda file or upload multiple files(shp,dbf,prj,shx)")
     }
-  }else{
-
+  }
+  if(l>1){
     a <- c("shp"=FALSE,"dbf"=FALSE,"prj"=FALSE,"shx"=FALSE)
     for(i in 1:nrow(fileDataFrame)){
       ext <- tools::file_ext(fileDataFrame$datapath[i])
@@ -42,10 +40,8 @@ validate_ShapeFile <- function(fileDataFrame){
       }
     }
     if(a["shp"] & a["prj"] & a["dbf"] & a["shx"]){
-
       return(NULL)
     }else{
-
       return("Error. When uploading multiple files shp,dbf,rpj and shx files have to be included")
     }
   }

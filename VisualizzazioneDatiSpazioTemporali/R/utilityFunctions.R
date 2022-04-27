@@ -90,9 +90,8 @@ generateDataForSpatialPlotLocation <- function(data,map,variable,timestamp){
 }
 
 
-generateDataForTimeSeriesPlotRegion <- function(data,variable,setOfLocations){
-
-  if("all" %in% setOfLocations){
+generateDataForTimeSeriesPlotRegion <- function(data,variable,setOfRegions){
+  if("all" %in% setOfRegions){
     s <- utils::unstack(data[,c(variable,"region_name")])
   }else{
     s <- utils::unstack(data[data$region_name %in% setOfLocations,c(variable,'region_name')])

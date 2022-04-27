@@ -235,7 +235,7 @@ VisualizzazioneDatiAreali <- function(){
       input$variable
     })
 
-    setOfRegations <- shiny::reactive({
+    setOfRegions <- shiny::reactive({
 
       shiny::req(input$regToPlot)
       input$regToPlot
@@ -258,16 +258,12 @@ VisualizzazioneDatiAreali <- function(){
       get_bins(input$ValuesForLegend,data(),variable())
     })
 
-
-
-
-
     dataForSpatialPlot <- shiny::reactive({
       generateDataForSpatialPlotRegion(updatedData(),updatedMap(),variable(),timestamp())
     })
 
     dataForTimeSeriesPlot <- shiny::reactive({
-      generateDataForTimeSeriesPlotRegion(updatedData(),variable(),setOfRegations())
+      generateDataForTimeSeriesPlotRegion(updatedData(),variable(),setOfRegions())
     })
 
 
@@ -298,11 +294,9 @@ VisualizzazioneDatiAreali <- function(){
 
       tmap::tm_shape(dataForSpatialPlot())+
         tmap::tm_polygons(col=variable(),breaks = ValuesForLegend())
+      })
 
-
-    })
     output$SpatialPlot <- tmap::renderTmap({
-
       SpatialPlot()
     })
 
