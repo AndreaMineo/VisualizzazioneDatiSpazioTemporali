@@ -4,9 +4,9 @@
 #' Per maggiori informazioni riferirsi a:
 #'
 #' https://github.com/AndreaMineo/VisualizzazioneDatiSpazioTemporali
+#'
 #' @export
 
-library(tmap)
 
 VisualizzazioneDatiAreali <- function(){
 

@@ -1,7 +1,3 @@
-
-library(tmap)
-
-
 loadDataFile <- function(filename,delimiter){
 
   extension <- tools::file_ext(filename$datapath)
