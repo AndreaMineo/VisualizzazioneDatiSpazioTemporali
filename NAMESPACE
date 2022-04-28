@@ -2,4 +2,4 @@
 
 export(VisualizzazioneDatiAreali)
 export(VisualizzazioneDatiPuntuali)
-import(tmap)
+importFrom(tmap,tmap_leaflet)
