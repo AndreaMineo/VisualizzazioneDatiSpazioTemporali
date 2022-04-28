@@ -38,7 +38,7 @@ VisualizzazioneDatiPuntuali <- function(){
         #### WIDGET TO SELECT COLUMN CONTAINING LOCATIONS' NAMES ON SHAPE FILE
 
         shiny::selectInput("colLocNameShapeFile",
-                           label= "Selecting the column containing locations' names in the shape file",
+                           label= "Selecting the column containing locations' names in the map file",
                            choices=NULL
         ),
 
@@ -273,7 +273,7 @@ VisualizzazioneDatiPuntuali <- function(){
 
     TimeSeriesPlot <- shiny::reactive({
 
-      d <- dygraphs::dyRangeSelector(dygraphs::dygraph(dataForTimeSeriesPlot()))
+      d <- dygraphs::dyRangeSelector(dygraphs::dygraph(dataForTimeSeriesPlot(), main=variable()))
       dygraphs::dyLegend(d,show = 'onmouseover',width = 400)
 
     })
@@ -299,7 +299,8 @@ VisualizzazioneDatiPuntuali <- function(){
 
 
       tmap::tm_shape(dataForSpatialPlot())+
-        tmap::tm_symbols(col=variable(),popup.vars = TRUE,breaks =ValuesForLegend())
+        tmap::tm_symbols(col=variable(),popup.vars = TRUE,breaks =ValuesForLegend())+
+        tmap::tm_layout(title = paste(variable(),"-",timestamp()))
     })
 
     output$SpatialPlot <- tmap::renderTmap({

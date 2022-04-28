@@ -94,7 +94,7 @@ generateDataForTimeSeriesPlotRegion <- function(data,variable,setOfRegions){
   if("all" %in% setOfRegions){
     s <- utils::unstack(data[,c(variable,"region_name")])
   }else{
-    s <- utils::unstack(data[data$region_name %in% setOfLocations,c(variable,'region_name')])
+    s <- utils::unstack(data[data$region_name %in% setOfRegions,c(variable,'region_name')])
   }
   if(is.character(data$timestamp)){
     s[,"timestamp"] <- unique(as.POSIXct(data$timestamp))

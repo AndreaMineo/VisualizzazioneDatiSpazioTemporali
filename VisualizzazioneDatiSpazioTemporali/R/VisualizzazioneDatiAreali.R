@@ -37,7 +37,7 @@ VisualizzazioneDatiAreali <- function(){
 
 
         shiny::selectInput("colRegNameShapeFile",
-                           label= "Selecting the column containing regions' names in the shape file",
+                           label= "Selecting the column containing regions' names in the map file",
                            choices=NULL
         ),
 
@@ -269,7 +269,7 @@ VisualizzazioneDatiAreali <- function(){
 
 
     TimeSeriesPlot <- shiny::reactive({
-      d <- dygraphs::dyRangeSelector(dygraphs::dygraph(dataForTimeSeriesPlot()))
+      d <- dygraphs::dyRangeSelector(dygraphs::dygraph(dataForTimeSeriesPlot(),main=variable()))
       dygraphs::dyLegend(d,show = 'onmouseover',width = 400)
 
     })
@@ -293,7 +293,8 @@ VisualizzazioneDatiAreali <- function(){
       }
 
       tmap::tm_shape(dataForSpatialPlot())+
-        tmap::tm_polygons(col=variable(),breaks = ValuesForLegend())
+        tmap::tm_polygons(col=variable(),breaks = ValuesForLegend())+
+        tmap::tm_layout(title = paste(variable(),"-",timestamp()))
       })
 
     output$SpatialPlot <- tmap::renderTmap({
