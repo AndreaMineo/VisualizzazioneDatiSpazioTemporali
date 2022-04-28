@@ -6,7 +6,7 @@
 #' https://github.com/AndreaMineo/VisualizzazioneDatiSpazioTemporali
 #' @export
 
-
+library(tmap)
 
 VisualizzazioneDatiAreali <- function(){
 
