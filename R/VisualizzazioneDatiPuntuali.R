@@ -71,7 +71,7 @@ VisualizzazioneDatiPuntuali <- function(){
 
 
         shinyWidgets::sliderTextInput("ChoosedTimestamp",
-                                      label="Selecting date for spatial plot",
+                                      label="Selecting timestamp for spatial plot",
                                       choices=c("first_date","last_date"),
                                       selected = NULL,
                                       animate = TRUE
