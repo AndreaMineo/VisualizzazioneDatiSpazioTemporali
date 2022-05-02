@@ -49,7 +49,7 @@ un’istanza di una delle seguenti classi R: sf, SpatVector, SpatialPolygonsData
 informazioni presenti nella prima istanza valida trovata. Ovviamente la
 classe SpatialPointsDataFrame specifica dati di tipo puntuale e non sarà
 considerata validata dalla funzione VisualizzazioneDatiAreali
-* Nel caso si utilizzi un file con RData e che all’interno del file le infor-
+* Nel caso si utilizzi un file RData e che all’interno del file le infor-
 mazioni spaziali siano contenute in un oggetto di tipo sf, la funzione
 VisualizzazioneDatiAreali accetta come valide istanze aventi geometria di
 tipo MULTIPOLYGON o POLYGON, mentre, la funzione Visualizza-
