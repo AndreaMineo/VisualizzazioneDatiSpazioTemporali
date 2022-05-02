@@ -4,8 +4,7 @@
 Pacchetto R per la visualizzazione di dati spazio-temporali, al fine di supportare l'analisi nelle fasi che richiedono la generazione di rappresentazioni grafiche dei dati.
 
 All’interno del pacchetto sono presenti due funzioni:
-1) VisualizzazioneDatiAreali : per la visualizzazione di dati con connota-
-zione spaziale di tipo areale
+1) VisualizzazioneDatiAreali : per la visualizzazione di dati con connotazione spaziale di tipo areale
 2) VisualizzazioneDatiPuntuali : per la visualizzazione di dati con
 connotazione spaziale di tipo puntuale
 
@@ -13,25 +12,23 @@ Entrambe le funzioni permettono di eseguire delle applicazioni web, sviluppate a
 Affinché l’applicazione possa estrapolare correttamente le informazioni sulle
 serie temporali archiviate nel file dati è necessario che quest’ultimo rispetti le
 seguenti specifiche:
-1)Il file dati deve essere un file di tipo "comma-separeted-values" (csv) o una
+1) Il file dati deve essere un file di tipo "comma-separeted-values" (csv) o una
 cartella di lavoro excel (xlsx). Nel primo caso all’utente verrà richiesto
 di specificare il delimitatore utilizzato all’interno del file. L’insieme dei
 possibili valori per il delimitatore è il seguente (",",";","/")
-2)Il file dati verrà rappresentato all’interno dell’applicazione come un’istanza
+2) Il file dati verrà rappresentato all’interno dell’applicazione come un’istanza
 della classe data.frame. Affinché sia possibile interpretare correttamente i
 dati è necessario che la prima colonna sia di tipo character o numeric, e
 che contenga i timestamps delle serie temporali definite nel file dati. Nel
 caso la prima colonna contenga elementi di tipo character essi devono
 essere convertibili in oggetti di tipo POSIXct
-3)Il file dati dovrà contenere un colonna che riporta le informazioni sulle
+3) Il file dati dovrà contenere un colonna che riporta le informazioni sulle
 denominazioni delle località/aree geografiche dove sono state effettuate le
 osservazioni
-4)Il file dati dovrà contenere almeno una colonna con elementi di tipo
+4) Il file dati dovrà contenere almeno una colonna con elementi di tipo
 numerico
 
-Affinché l’applicazione possa estrapolare correttamente le informazioni
-spaziali contenute nel file map è necessario che quest’ultimo rispetti le seguenti
-specifiche:
+Affinché l’applicazione possa estrapolare correttamente le informazioni spaziali contenute nel file map è necessario che quest’ultimo rispetti le seguenti specifiche:
 • Il file map deve essere uno shape file o un file RData (file utilizzato per
 archiviare oggetti nell’ambiente R avente estensione "RData" o "rda").
 Nel caso di shape file è necessario effettuare un upload multiplo caricando
