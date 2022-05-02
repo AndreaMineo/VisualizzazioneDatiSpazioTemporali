@@ -93,11 +93,8 @@ necessario inserire i valori degli estremi separati da virgola
 * Effettuare il download dei due grafici nei formati html, pdf e immagine.
 * Definire la modalità di visualizzazione del grafico spaziale. Le due possibili
 alternative sono:
-  * Con basemap: in questo caso nel grafico spaziale verrà visualizzato come layer sottostante una basemap che riporta i principali confini         
-    amministrativi dell’area di studio. Tale modalità arricchisce il contenuto informativo della mappa, poiché permette di individuare visivamente la 
-    collocazione geografica di ciascuna entità spaziale rappresentata, utilizzando come riferimento i confini delle unità amministrative riportati dalla     basemap. Affinché la visualizzazione sia corretta è necessario utilizzare un’opportuna proiezione nella definizione dell’entità spaziali.
-  * Senza basemap: in questo caso nel grafico spaziale verrà visualizzato come layer sottostante uno sfondo neutro di colore grigio. Modalità
-    particolarmente indicata nel caso in cui non sia nota la proiezione da utilizzare per i dati spaziali da analizzare
+  * Con basemap: in questo caso nel grafico spaziale verrà visualizzato come layer sottostante una basemap che riporta i principali confini         amministrativi dell’area di studio. Tale modalità arricchisce il contenuto informativo della mappa, poiché permette di individuare visivamente la collocazione geografica di ciascuna entità spaziale rappresentata, utilizzando come riferimento i confini delle unità amministrative riportati dalla     basemap. Affinché la visualizzazione sia corretta è necessario utilizzare un’opportuna proiezione nella definizione dell’entità spaziali.
+  * Senza basemap: in questo caso nel grafico spaziale verrà visualizzato come layer sottostante uno sfondo neutro di colore grigio. Modalità particolarmente indicata nel caso in cui non sia nota la proiezione da utilizzare per i dati spaziali da analizzare
 
 
 
