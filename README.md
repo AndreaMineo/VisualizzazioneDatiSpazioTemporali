@@ -1,7 +1,11 @@
 # VisualizzazioneDatiSpazioTemporali
 
+## Descrizione pacchetto
 
 Pacchetto R per la visualizzazione di dati spazio-temporali, al fine di supportare l'analisi nelle fasi che richiedono la generazione di rappresentazioni grafiche dei dati.
+
+Per installare il pacchetto utilizzare devtools::install_github, passando come parametro l'url del repository:
+
 
 All’interno del pacchetto sono presenti due funzioni:
 * VisualizzazioneDatiAreali : per la visualizzazione di dati con connotazione spaziale di tipo areale
@@ -11,6 +15,8 @@ connotazione spaziale di tipo puntuale
 Entrambe le funzioni permettono di eseguire delle applicazioni web, sviluppate attraverso il framework shiny, le quali possono essere utilizzate dall'utente per generare automaticamente dei grafici interattivi, a partire da un file dati contenente le serie storiche delle osservazioni effettuate sul fenomeno e un file map contenente le informazioni spaziali sulle aree/località geografiche dove tali osservazioni sono state effettuate, al fine di supportare l’analisi della distribuzione spaziale e temporale dei dati.
 
 Nel caso si utilizzi la funzione VisualizzazioneDatiAreali, l'applicazione corrispondente genererà un grafico spaziale all'interno del quale le entità spaziali descritte nel file map saranno rappresentate come poligoni. Nel caso si utilizzi la funzione VisualizzazioneDatiPuntuali l'applicazione corrispondente genererà un grafico spaziale all'interno del quale le entità spaziali descritte nel file map saranno rappresentate tramite punti.
+
+## Specifiche per i dati di input
 
 Affinché l’applicazione possa estrapolare correttamente le informazioni sulle
 serie temporali archiviate nel file dati è necessario che quest’ultimo rispetti le
@@ -69,6 +75,10 @@ correttamente il grafico spaziale è necessario che l’intersezione tra l’ins
 delle denominazioni ottenuto dal file map e l’insieme delle denominazioni
 ottenuto dal file dati sia non vuota
 
+Per garantire la corretta visualizzazione delle entità spaziali definite all'interno del file map è necessario utilizzare la corretta poriezione dei dati. Nel caso si utilizzi uno shape file tale informazione è contenuta all'interno del file con estensione prj. Nel caso si utilizzi un file RData bisogna verificare che l'istanza contenuta nel file abbia una proiezione corretta. Generalmente i metadati di una dataset spaziale, anche quando fornito in formato tabellare, contengono le informazioni necessarie alla definizione della proiezione da utilizzare affichè sia possibile rappresentare i dati all'interno di una mappa. Tuttavia esistono casi in cui tale informazione non è disponibile. Il repository [ExampleDataForVisualizzazioneDatiSpazioTemporali] (https://github.com/AndreaMineo/ExampleDataForVisualizzazioneDatiSpazioTemporali) contiene esempi utili, che dexcrivono nel dettaglio la procedura da seguire per attribuire la corretta proiezione ai dati spaziali. 
+
+## Funzionalità supportate
+
 L’applicazione esegue tutti i controlli necessari a garantire che i dati inseriti
 dall’utente siano conformi alle specifiche descritte in precedenza. In caso uno
 o più test di validazione falliscano, vengono restituiti dei messaggi di errore
@@ -95,6 +105,7 @@ necessario inserire i valori degli estremi separati da virgola
 alternative sono:
   * Con basemap: in questo caso nel grafico spaziale verrà visualizzato come layer sottostante una basemap che riporta i principali confini         amministrativi dell’area di studio. Tale modalità arricchisce il contenuto informativo della mappa, poiché permette di individuare visivamente la collocazione geografica di ciascuna entità spaziale rappresentata, utilizzando come riferimento i confini delle unità amministrative riportati dalla     basemap. Affinché la visualizzazione sia corretta è necessario utilizzare un’opportuna proiezione nella definizione dell’entità spaziali.
   * Senza basemap: in questo caso nel grafico spaziale verrà visualizzato come layer sottostante uno sfondo neutro di colore grigio. Modalità particolarmente indicata nel caso in cui non sia nota la proiezione da utilizzare per i dati spaziali da analizzare
+
 
 
 
