@@ -47,7 +47,7 @@ centroide del poligono
 * Nel caso si utilizzi un file RData per caricare le informazioni spaziali all’interno dell’applicazione è necessario che il file contenga almeno
 un’istanza di una delle seguenti classi R: sf, SpatVector, SpatialPolygonsDataFrame, SpatialPointsDataFrame. L’applicazione considererà le
 informazioni presenti nella prima istanza valida trovata. Ovviamente la
-classe SpatialPointsDataFrame specifica dati di tipo puntuale è non sarà
+classe SpatialPointsDataFrame specifica dati di tipo puntuale e non sarà
 considerata validata dalla funzione VisualizzazioneDatiAreali
 * Nel caso si utilizzi un file con RData e che all’interno del file le infor-
 mazioni spaziali siano contenute in un oggetto di tipo sf, la funzione
