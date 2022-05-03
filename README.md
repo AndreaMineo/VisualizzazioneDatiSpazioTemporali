@@ -4,7 +4,7 @@
 
 [Descrizione Pacchetto](#desc)  
 [Specifiche per i dati di input](#spec) 
-[Funzionalità supportate](#func)
+[Funzionalità supportate](#funzionalità)
 [Installazione Pacchetto](#install)
 
 <a name = "desc"/>
