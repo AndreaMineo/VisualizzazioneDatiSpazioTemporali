@@ -134,3 +134,8 @@ Una volta avviata l'applicazione apparira la seguente schermata:
 
 ![Schermata Iniziale Applicazione](https://raw.githubusercontent.com/AndreaMineo/ExampleDataForVisualizzazioneDatiSpazioTemporali/main/Images/SchermataInizialeApplicazione.png)
 
+Nel pannello laterale sinistro sono collocati una serie di componenti che permettono all'utente di interagire con l'applicazione definendone gli input, oltre che ai due bottoni per il download dei grafici prodotti.
+
+L'immagine sottostante mostra un grafico temporale di esempio ottenuto dall'applicazione (i dati utilizzati sono disponibili all'interno della cartella ExampleData del repository [ExampleDataForVisualizzazioneDatiSpazioTemporali](https://github.com/AndreaMineo/ExampleDataForVisualizzazioneDatiSpazioTemporali)):
+
+![Grafico Temporale ottenuto da VisualizzazioneDatiAreali](https://raw.githubusercontent.com/AndreaMineo/ExampleDataForVisualizzazioneDatiSpazioTemporali/main/Images/timeSeriesPlotCasoAreale1.jpeg)
