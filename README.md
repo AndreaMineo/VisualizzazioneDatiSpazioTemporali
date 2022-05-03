@@ -3,7 +3,9 @@
 ## Table of Contents  
 [Descrizione Pacchetto](#desc)  
 [Specifiche per i dati di input](#spec) 
+
 [Funzionalità supportate](#func)
+
 [Installazione Pacchetto](#install)
 
 <a name = "desc"/>
