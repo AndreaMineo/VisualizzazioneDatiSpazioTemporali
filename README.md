@@ -132,5 +132,5 @@ VisualizzazioneDatiAreali()
 
 Una volta avviata l'applicazione apparira la seguente schermata:
 
-
+![Schermata Iniziale Applicazione](https://raw.githubusercontent.com/AndreaMineo/ExampleDataForVisualizzazioneDatiSpazioTemporali/main/Images/SchermataInizialeApplicazione.png)
 
