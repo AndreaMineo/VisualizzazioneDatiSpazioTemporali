@@ -126,8 +126,11 @@ Per avviare l'applicazione per l'analisi di dati spazio temporali con connnotazi
 
 ```R
 library(VisualizzazioneDatiSpazioTemporali)
-VisualizzazioneDatiAreali
+VisualizzazioneDatiAreali()
 ```
+È possibile avviare l'applicazione sia da console R che da RStudio. Nel primo caso l'applicazione sarà visualizzata in una finestra del browser, nel secondo caso all'interno di una finestra dell'IDE. 
+
+Una volta avviata l'applicazione apparira la seguente schermata:
 
 
 
