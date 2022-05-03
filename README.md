@@ -119,5 +119,6 @@ library(devtools)
 url = ""
 install_github(url)
 ```
+È necessario che sulla macchina sia installato R (
 
 
