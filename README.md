@@ -115,9 +115,19 @@ Per installare il pacchetto localmente basta utilizzare la funzione install\_git
 
 ```R
 library(devtools)
-url = ""
+url = "https://github.com/AndreaMineo/VisualizzazioneDatiSpazioTemporali"
 install_github(url)
 ```
 È necessario che sulla macchina sia installato R (>= 3.5.0). I pachetti aggiuntivi necessari all'esecuzione dell'applicazione saranno installati in fase di installazione del pacchetto.
+
+## Esempi di utilizzo
+
+Per avviare l'applicazione per l'analisi di dati spazio temporali con connnotazione spaziale di tipo areale bisogna invocare la funzione VisualizzazioneDatiAreali:
+
+```R
+library(VisualizzazioneDatiSpazioTemporali)
+VisualizzazioneDatiAreali
+```
+
 
 
