@@ -121,10 +121,10 @@ alternative sono:
 
 Per installare il pacchetto localmente basta utilizzare la funzione devtools::install\_github, passando come argomento l'url del repository:
 
-'''R
+```R
 library(devtools)
 url = ""
 install_github(url)
-'''
+```
 
 
