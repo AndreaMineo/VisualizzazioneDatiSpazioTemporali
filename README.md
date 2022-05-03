@@ -157,3 +157,5 @@ Le due immagini sottostanti mostrano, rispettivamente, un esempio di grafico tem
 ![Grafico Temporale ottenuto da VisualizzazioneDatiPuntuali](https://raw.githubusercontent.com/AndreaMineo/ExampleDataForVisualizzazioneDatiSpazioTemporali/main/Images/timeSeriesPlotCasoPuntuale1.jpeg)
 
 ![Grafico Spaziale ottenuto da VisualizzazioneDatiPuntuali](https://raw.githubusercontent.com/AndreaMineo/ExampleDataForVisualizzazioneDatiSpazioTemporali/main/Images/spatialPlotCasoPuntuale2.jpeg)
+
+
