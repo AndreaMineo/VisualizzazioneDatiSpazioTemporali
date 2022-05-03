@@ -1,6 +1,7 @@
 # VisualizzazioneDatiSpazioTemporali
 
 ## Table of Contents  
+
 [Descrizione Pacchetto](#desc)  
 [Specifiche per i dati di input](#spec) 
 [Funzionalità supportate](#func)
@@ -119,7 +120,7 @@ alternative sono:
 
 ## Installazione Pacchetto
 
-Per installare il pacchetto localmente basta utilizzare la funzione devtools::install\_github, passando come argomento l'url del repository:
+Per installare il pacchetto localmente basta utilizzare la funzione install\_github del pacchetto devtools, passando come argomento l'url del repository:
 
 ```R
 library(devtools)
