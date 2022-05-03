@@ -139,3 +139,7 @@ Nel pannello laterale sinistro sono collocati una serie di componenti che permet
 L'immagine sottostante mostra un grafico temporale di esempio ottenuto dall'applicazione (i dati utilizzati sono disponibili all'interno della cartella ExampleData del repository [ExampleDataForVisualizzazioneDatiSpazioTemporali](https://github.com/AndreaMineo/ExampleDataForVisualizzazioneDatiSpazioTemporali)):
 
 ![Grafico Temporale ottenuto da VisualizzazioneDatiAreali](https://raw.githubusercontent.com/AndreaMineo/ExampleDataForVisualizzazioneDatiSpazioTemporali/main/Images/timeSeriesPlotCasoAreale1.jpeg)
+
+L'immagine sottostante mostra un esempio di grafico spaziale ottenuto dall'applicazione:
+
+![Grafico Spaziale ottenuto da VisualizzazioneDatiAreali](https://raw.githubusercontent.com/AndreaMineo/ExampleDataForVisualizzazioneDatiSpazioTemporali/main/Images/spatialPlotCasoAreale2.jpeg)
