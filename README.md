@@ -143,3 +143,17 @@ L'immagine sottostante mostra un grafico temporale di esempio ottenuto dall'appl
 L'immagine sottostante mostra un esempio di grafico spaziale ottenuto dall'applicazione:
 
 ![Grafico Spaziale ottenuto da VisualizzazioneDatiAreali](https://raw.githubusercontent.com/AndreaMineo/ExampleDataForVisualizzazioneDatiSpazioTemporali/main/Images/spatialPlotCasoAreale2.jpeg)
+
+Per avviare l'applicazione per l'analisi di dati spazio-temporali con connotazione spaziale di tipo puntuale bisogna invocare la funzione VisualizzazioneDatiPuntuali:
+
+```R
+library(VisualizzazioneDatiSpazioTemporali)
+VisualizzazioneDatiPuntuali()
+```
+La schermata iniziale è identica al caso areale.
+
+Le due immagini sottostanti mostrano, rispettivamente, un esempio di grafico temporale ottenuto dall'applicazione e un esempio di grafico spaziale. I dati utilizzati sono disponibili all'interno della cartella ExampleData del repository [ExampleDataForVisualizzazioneDatiSpazioTemporali](https://github.com/AndreaMineo/ExampleDataForVisualizzazioneDatiSpazioTemporali):
+
+![Grafico Temporale ottenuto da VisualizzazioneDatiPuntuali](https://raw.githubusercontent.com/AndreaMineo/ExampleDataForVisualizzazioneDatiSpazioTemporali/main/Images/timeSeriesPlotCasoPuntuale1.jpeg)
+
+![Grafico Spaziale ottenuto da VisualizzazioneDatiPuntuali](https://raw.githubusercontent.com/AndreaMineo/ExampleDataForVisualizzazioneDatiSpazioTemporali/main/Images/spatialPlotCasoPuntuale2.jpeg)
