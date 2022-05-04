@@ -6,6 +6,8 @@
 - [Funzionalità supportate](#func)
 - [Installazione Pacchetto](#install)
 - [Esempi di utilizzo](#examples)
+- [Autori](#autori)
+- [Licenza](#licenza)
 
 
 <a name ="desc"/>
@@ -169,5 +171,17 @@ Le due immagini sottostanti mostrano, rispettivamente, un esempio di grafico tem
 ![Grafico Temporale ottenuto da VisualizzazioneDatiPuntuali](https://raw.githubusercontent.com/AndreaMineo/ExampleDataForVisualizzazioneDatiSpazioTemporali/main/Images/timeSeriesPlotCasoPuntuale1.jpeg)
 
 ![Grafico Spaziale ottenuto da VisualizzazioneDatiPuntuali](https://raw.githubusercontent.com/AndreaMineo/ExampleDataForVisualizzazioneDatiSpazioTemporali/main/Images/spatialPlotCasoPuntuale2.jpeg)
+
+<a name="autori"/>
+
+## Autori
+
+Il pacchetto è stato sviluppato come progetto di tesi per il corso di studi magistrale di Ingegneria Informatica, presso l'università di Bologna. Il progetto di tesi è stao sviluppato dallo studente Mineo Andrea, publisher di questo repository, in collaborazione con i docenti Sartori Claudio, del diaprtimento di Informatica, Scienza e Ingegneria, e Ventrucci Massimo, del dipartimento di Scienze Statistiche.
+
+<a name="licenza"/>
+
+## Licenza
+
+Il codice sorgente del pacchetto è rilasciato con licenza software [GNU GPLv3](https://choosealicense.com/licenses/gpl-3.0/)
 
 
