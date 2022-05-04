@@ -176,7 +176,7 @@ Le due immagini sottostanti mostrano, rispettivamente, un esempio di grafico tem
 
 ## Autori
 
-Il pacchetto è stato sviluppato come progetto di tesi per il corso di studi magistrale di Ingegneria Informatica, presso l'università di Bologna. Il progetto di tesi è stao sviluppato dallo studente Mineo Andrea, publisher di questo repository, in collaborazione con i docenti Sartori Claudio, del diaprtimento di Informatica, Scienza e Ingegneria, e Ventrucci Massimo, del dipartimento di Scienze Statistiche.
+Il pacchetto è stato sviluppato come progetto di tesi per il corso di studi magistrale di Ingegneria Informatica, presso l'università di Bologna. Il progetto di tesi è stao sviluppato dallo studente Mineo Andrea, publisher di questo repository, in collaborazione con i docenti Sartori Claudio, del dipartimento di Informatica, Scienza e Ingegneria, e Ventrucci Massimo, del dipartimento di Scienze Statistiche.
 
 <a name="licenza"/>
 
