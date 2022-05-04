@@ -4,7 +4,8 @@
 - [Descrizione pacchetto](#desc)
 - [Specifiche per i dati di input](#spec)
 - [Funzionalità supportate](#func)
-- [Installazione Pacchetto)(#install)
+- [Installazione Pacchetto](#install)
+- [Esempi di utilizzo](#examples)
 
 
 <a name ="desc"/>
@@ -22,6 +23,7 @@ Entrambe le funzioni permettono di eseguire delle applicazioni web, sviluppate a
 
 Nel caso si utilizzi la funzione VisualizzazioneDatiAreali, l'applicazione corrispondente genererà un grafico spaziale all'interno del quale le entità spaziali descritte nel file map saranno rappresentate come poligoni. Nel caso si utilizzi la funzione VisualizzazioneDatiPuntuali l'applicazione corrispondente genererà un grafico spaziale all'interno del quale le entità spaziali descritte nel file map saranno rappresentate tramite punti.
 
+<a name ="spec"/>
 
 ## Specifiche per i dati di input
 
@@ -84,7 +86,7 @@ ottenuto dal file dati sia non vuota
 
 Per garantire la corretta visualizzazione delle entità spaziali definite all'interno del file map è necessario utilizzare la corretta poriezione dei dati. Nel caso si utilizzi uno shape file tale informazione è contenuta all'interno del file con estensione prj. Nel caso si utilizzi un file RData bisogna verificare che l'istanza contenuta nel file abbia una proiezione corretta. Generalmente i metadati di una dataset spaziale, anche quando fornito in formato tabellare, contengono le informazioni necessarie alla definizione della proiezione da utilizzare affichè sia possibile rappresentare i dati all'interno di una mappa. Tuttavia esistono casi in cui tale informazione non è disponibile. Il repository [ExampleDataForVisualizzazioneDatiSpazioTemporali](https://github.com/AndreaMineo/ExampleDataForVisualizzazioneDatiSpazioTemporali) contiene esempi utili, che dexcrivono nel dettaglio la procedura da seguire per attribuire la corretta proiezione ai dati spaziali. 
 
-
+<a name="func"/>
 
 ## Funzionalità supportate
 
@@ -115,7 +117,7 @@ alternative sono:
   * Con basemap: in questo caso nel grafico spaziale verrà visualizzato come layer sottostante una basemap che riporta i principali confini         amministrativi dell’area di studio. Tale modalità arricchisce il contenuto informativo della mappa, poiché permette di individuare visivamente la collocazione geografica di ciascuna entità spaziale rappresentata, utilizzando come riferimento i confini delle unità amministrative riportati dalla     basemap. Affinché la visualizzazione sia corretta è necessario utilizzare un’opportuna proiezione nella definizione dell’entità spaziali.
   * Senza basemap: in questo caso nel grafico spaziale verrà visualizzato come layer sottostante uno sfondo neutro di colore grigio. Modalità particolarmente indicata nel caso in cui non sia nota la proiezione da utilizzare per i dati spaziali da analizzare
 
-
+<a name ="install"/>
 
 ## Installazione Pacchetto
 
@@ -127,6 +129,8 @@ url = "https://github.com/AndreaMineo/VisualizzazioneDatiSpazioTemporali"
 install_github(url)
 ```
 È necessario che sulla macchina sia installato R (>= 3.5.0). I pachetti aggiuntivi necessari all'esecuzione dell'applicazione saranno installati in fase di installazione del pacchetto.
+
+<a name="examples"/>
 
 ## Esempi di utilizzo
 
