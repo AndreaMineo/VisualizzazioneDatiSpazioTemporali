@@ -4,10 +4,10 @@ Version: 0.0.0.9000
 Authors@R: 
     person("Andrea", "Mineo", , "mineoandrea92@gmail.com", role = c("aut", "cre"))
 Description: The package provides two functions for running two shiny applications that allow user to automatically generate charts for visualize spatial and temporal distribution of data uploaded to application.
-License: GNU GPLv3
+License: gpl-2
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2.9000
+RoxygenNote: 7.2.0
 Dependens: R >= 3.5.0,tmap
 Imports:
   shiny,
@@ -16,11 +16,9 @@ Imports:
   tools,
   xts,
   sf,
-  terra,
-  sp,
   tmap,
   dygraphs,
   utils,
   shinyWidgets,
-  webshot,
-  htmlwidgets
+  htmlwidgets,
+  webshot
