@@ -22,4 +22,5 @@ Imports:
   dygraphs,
   utils,
   shinyWidgets,
-  webshot
+  webshot,
+  htmlwidgets
