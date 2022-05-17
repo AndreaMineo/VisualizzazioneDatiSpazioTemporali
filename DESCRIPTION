@@ -21,4 +21,5 @@ Imports:
   tmap,
   dygraphs,
   utils,
-  shinyWidgets
+  shinyWidgets,
+  webshot
