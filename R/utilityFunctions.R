@@ -38,7 +38,7 @@ loadShapeFile<- function(InputFilesdf,type){
   }
   else{
     tempdirname <- dirname(InputFilesdf$datapath[1])
-
+    ### non è necessario rinominare i file
     # Rename files
     for (i in 1:nrow(InputFilesdf)) {
       file.rename(
